@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html lang="my">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#1b2a1f">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="LM Invoice">
+<meta name="format-detection" content="telephone=no">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<title>LM STUDIO Invoice</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Myanmar:wght@400;500;600;700;800&family=Noto+Sans+Shan:wght@400;500;600;700&family=Noto+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+<script>
+(function(){
+  var s=document.createElement('style');
+  s.textContent='*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:"Noto Sans Myanmar","Noto Sans Shan","Noto Sans",sans-serif}input,select,textarea{font-family:inherit}.nav-btn{color:var(--muted);border-bottom:2px solid transparent;transition:all .2s;white-space:nowrap}.nav-btn.active{color:var(--text);border-bottom-color:var(--accent);background:var(--accent-soft)}.nav-btn:hover{color:var(--text)}.card{background:var(--card);border:1px solid var(--border);border-radius:14px}.btn-primary{background:var(--accent);color:var(--btnText);font-weight:700;border:none;border-radius:10px;padding:10px 18px;cursor:pointer}.btn-primary:hover{opacity:.85}.btn-ghost{background:var(--card2);color:var(--text);border:1px solid var(--border);border-radius:10px;padding:9px 16px;cursor:pointer}.btn-danger{background:var(--danger-soft);color:var(--danger);border:1px solid var(--danger);border-radius:8px;padding:5px 10px;cursor:pointer;font-size:12px}.field{width:100%;background:var(--card2);border:1px solid var(--border);border-radius:9px;padding:9px 12px;color:var(--text);font-size:14px;outline:none}.field:focus{border-color:var(--accent)}.field::placeholder{color:var(--muted)}.pill{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600}.pill-paid{background:rgba(138,184,58,.18);color:#a8d45c}.pill-partial{background:rgba(201,168,106,.2);color:#e0c48a}.pill-unpaid{background:rgba(224,92,92,.18);color:#f08a8a}.pill-booked{background:rgba(201,168,106,.2);color:#e0c48a}.pill-confirmed{background:rgba(138,184,58,.18);color:#a8d45c}.pill-completed{background:rgba(120,140,180,.2);color:#a8b8d8}.pill-cancelled{background:rgba(224,92,92,.18);color:#f08a8a}.tbl-row{border-bottom:1px solid var(--border)}.tbl-row:hover{background:rgba(128,128,128,.08)}.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.6);display:flex;align-items:flex-start;justify-content:center;padding:16px;z-index:50;overflow-y:auto}.modal{background:var(--card);border:1px solid var(--border);border-radius:16px;width:100%;max-width:640px;padding:22px;margin-top:16px}.note-card{border-radius:12px;padding:14px;min-height:110px;position:relative}.scroll-x{overflow-x:auto;-webkit-overflow-scrolling:touch}.chip{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:20px;background:var(--card2);border:1px solid var(--border);font-size:12px;margin:3px}.chip button{background:none;border:none;color:var(--danger);cursor:pointer;font-weight:700;padding:0}.toggle{position:relative;width:42px;height:22px;border-radius:11px;background:var(--card2);border:1px solid var(--border);cursor:pointer;transition:background .2s;flex-shrink:0}.toggle.on{background:var(--accent)}.toggle::after{content:"";position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:#fff;transition:left .2s}.toggle.on::after{left:22px}.subtab{padding:8px 14px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;color:var(--muted)}.subtab.active{background:var(--accent-soft);color:var(--text)}@page{size:A4 portrait;margin:8mm}@media print{body *{visibility:hidden}#printArea,#printArea *{visibility:visible}#printArea{position:absolute;left:0;top:0;width:100%;color:#000;background:#fff}.no-print{display:none!important}}.sig-canvas{background:#fff;border-radius:8px;touch-action:none;cursor:crosshair}';
+  document.head.appendChild(s);
+})();
+</script>
+</head>
+<body>
+<div style="background:var(--bg);min-height:100vh;">
+<div style="max-width:1200px;margin:0 auto;padding:14px 14px 60px;">
+<div id="topBanner"></div>
+  <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:12px;">
+    <div style="display:flex;align-items:center;gap:12px;">
+      <div id="logoTile" style="width:56px;height:56px;border-radius:14px;background:var(--accent-soft);display:flex;align-items:center;justify-content:center;color:var(--accent);flex-shrink:0;">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+      </div>
+      <img id="headerLogo" style="display:none;width:56px;height:56px;border-radius:14px;object-fit:cover;flex-shrink:0;">
+      <div>
+        <h1 id="bizNameHeader" style="font-size:18px;font-weight:800;margin:0;line-height:1.2;">LM STUDIO</h1>
+        <p id="bizSubHeader" style="font-size:11px;color:var(--muted);margin:2px 0 0;">Invoice & Finance</p>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+      <select id="langSel" class="field" style="width:auto;padding:7px 10px;font-size:12px;">
+        <option value="my">မြန်မာ</option>
+        <option value="en">English</option>
+        <option value="shan">တႆး</option>
+        <option value="zh">简体中文</option>
+      </select>
+      <select id="curSel" class="field" style="width:auto;padding:7px 10px;font-size:12px;">
+        <option value="MMK">MMK — Ks</option>
+        <option value="USD">USD — $</option>
+        <option value="THB">THB — ฿</option>
+        <option value="CNY">CNY — ¥</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="scroll-x" style="display:flex;gap:4px;margin-bottom:18px;border-bottom:1px solid var(--border);">
+    <button class="nav-btn active" data-view="dashboard" style="padding:10px 14px;background:none;border-top:none;border-left:none;border-right:none;font-size:13px;font-weight:600;cursor:pointer;" data-i18n="nav_dash">ဒျရှ်ဘုတ်</button>
+    <button class="nav-btn" data-view="invoices" style="padding:10px 14px;background:none;border-top:none;border-left:none;border-right:none;font-size:13px;font-weight:600;cursor:pointer;" data-i18n="nav_inv">ငွေတောင်းချက်</button>
+    <button class="nav-btn" data-view="clients" style="padding:10px 14px;background:none;border-top:none;border-left:none;border-right:none;font-size:13px;font-weight:600;cursor:pointer;" data-i18n="nav_clients">ဖောက်သည်များ</button>
+    <button class="nav-btn" data-view="services" style="padding:10px 14px;background:none;border-top:none;border-left:none;border-right:none;font-size:13px;font-weight:600;cursor:pointer;" data-i18n="nav_services">ဝန်ဆောင်မှုများ</button>
+    <button class="nav-btn" data-view="bookings" style="padding:10px 14px;background:none;border-top:none;border-left:none;border-right:none;font-size:13px;font-weight:600;cursor:pointer;" data-i18n="nav_book">Pre-wedding Booking</button>
+    <button class="nav-btn" data-view="finance" style="padding:10px 14px;background:none;border-top:none;border-left:none;border-right:none;font-size:13px;font-weight:600;cursor:pointer;" data-i18n="nav_fin">ဘဏ္ဍာရေး</button>
+    <button class="nav-btn" data-view="reports" style="padding:10px 14px;background:none;border-top:none;border-left:none;border-right:none;font-size:13px;font-weight:600;cursor:pointer;" data-i18n="nav_reports">အစီရင်ခံစာ</button>
+    <button class="nav-btn" data-view="notes" style="padding:10px 14px;background:none;border-top:none;border-left:none;border-right:none;font-size:13px;font-weight:600;cursor:pointer;" data-i18n="nav_note">မှတ်ချက်</button>
+    <button class="nav-btn" data-view="settings" style="padding:10px 14px;background:none;border-top:none;border-left:none;border-right:none;font-size:13px;font-weight:600;cursor:pointer;" data-i18n="nav_set">ထည့်သွင်းမှု</button>
+  </div>
+  <div id="mobileNav" style="display:none;align-items:center;gap:8px;margin:-5px 0 16px;"><label for="wfMobileNav" id="wfMobileNavLabel" style="font-size:11px;color:var(--muted);white-space:nowrap;"></label><select id="wfMobileNav" class="field" style="min-width:0;" onchange="window.__mobileGo(this.value)"></select></div>
+
+  <div id="view"></div>
+</div>
+</div>
+<div id="modalRoot"></div>
+<div id="printArea" style="display:none;"></div>
+
+<script>
+(function(){
+  var I18N={
+    my:{nav_dash:'ဒျရှ်ဘုတ်',nav_inv:'ငွေတောင်းချက်',nav_book:'Pre-wedding Booking',nav_fin:'ဘဏ္ဍာရေး',nav_note:'မှတ်ချက်',nav_set:'ထည့်သွင်းမှု',
+      month_income:'ယခုလ ဝင်ငွေ',month_exp:'ယခုလ ထွက်ငွေ',net:'အမြတ်ကျန်',pending:'မရသေးသော ငွေ',chart6:'၆ လ ဝင်ငွေ vs ထွက်ငွေ',upcoming:'ရက်လာမည့် Booking',recent:'မကြာသေးမီ ငွေတောင်းချက်',
+      add_inv:'+ ငွေတောင်းချက် အသစ်',no:'နံပါတ်',client:'ဖောက်သည်',date:'ရက်စွဲ',total:'စုစုပေါင်း',balance:'ကျန်ငွေ',status:'အခြေအနေ',action:'လုပ်ဆောင်',view:'ကြည့်ရန်',del:'ဖျက်',paid:'ပြီးဆုံး',partial:'တစ်စိတ်တစ်ပိုင်း',unpaid:'မပေးရသေး',
+      add_book:'+ Booking အသစ်',add_exp:'+ ထွက်ငွေ ထည့်ရန်',add_note:'+ မှတ်သားရန်',save:'သိမ်းရန်',close:'ပိတ်ရန်',phone:'ဖုန်း',note:'မှတ်ချက်',discount:'လျှော့ဈေး',paid_amt:'ပေးသွင်းငွေ',
+      fin_income:'ဝင်ငွေစာရင်း',fin_pl:'အမြတ်/အရှုံး',fin_add_other:'+ အခြားဝင်ငွေ ထည့်ရန်',fin_ledger:'Income Ledger (ဝင်ငွေစာရင်း)',fin_period:'ကြာချိန်',daily:'နေ့စဉ်',monthly:'လစဉ်',yearly:'နှစ်စဉ်',
+      set_business:'စီးပွားရေး အချက်အလက်',set_inv:'Invoice စာရင်း',set_system:'System',biz_name:'စီးပွားရေးအမည်',biz_latin:'Latin အမည်',email:'Email',address:'လိပ်စာ',taxid:'Tax ID',pay_methods:'ငွေပေးချေနည်းများ',tax_rate:'Tax (%)',inv_prefix:'Invoice Prefix',due_days:'ပေးချေရမည့်ရက်',signature:'လက်မှတ် (ဆွဲရန်)',theme:'အရောင် Theme',currency:'ငွေကြေး',language:'ဘာသာစကား',backup:'Backup & Export',export_json:'ဒေတာ ဒေါင်းလုပ် (JSON)',import_json:'ဒေတာ ထည့်သွင်း',clear:'ဒေတာ အကုန်ဖျက်',thankyou:'ကျေးဇူးစကား',show_paid:'PAID တံဆိပ်ပြ',show_tax:'Tax ကော်လံပြ',show_bal:'ကျန်ငွေပြ',show_sig:'လက်မှတ်ထည့်ရန်နေရာပြ',
+      book_couple:'သတို့သား+သတို့သမီး',event_date:'ရိုက်ကူးရက်',location:'နေရာ',package:'ပက်ကေ့ခ်ျ',deposit:'စရံငွေ',booked:'အပ်ငွေရောက်',confirmed:'အတည်ပြုပြီး',completed:'ပြီးဆုံး',cancelled:'ဖျက်သိမ်း',days_left:'ရက်ကျန်',
+      cat:'အမျိုးအစား',desc:'အသေးစိတ်',amount:'ငွေပမာဏ',method:'ငွေပေးချေနည်း',source:'အရင်းအမြစ်',print:'Print / PDF',add_item:'+ ဝန်ဆောင်မှု ထည့်ရန်',due:'ပေးချေရမည့်ရက်'},
+    en:{nav_dash:'Dashboard',nav_inv:'Invoices',nav_book:'Pre-wedding Booking',nav_fin:'Finance',nav_note:'Notes',nav_set:'Settings',
+      month_income:'This Month Income',month_exp:'This Month Expense',net:'Net Profit',pending:'Outstanding',chart6:'6-Month Income vs Expense',upcoming:'Upcoming Bookings',recent:'Recent Invoices',
+      add_inv:'+ New Invoice',no:'No.',client:'Client',date:'Date',total:'Total',balance:'Balance',status:'Status',action:'Action',view:'View',del:'Delete',paid:'Paid',partial:'Partial',unpaid:'Unpaid',
+      add_book:'+ New Booking',add_exp:'+ Add Expense',add_note:'+ Add Note',save:'Save',close:'Close',phone:'Phone',note:'Note',discount:'Discount',paid_amt:'Amount Paid',
+      fin_income:'Income',fin_pl:'Profit & Loss',fin_add_other:'+ Add Other Income',fin_ledger:'Income Ledger',fin_period:'Period',daily:'Daily',monthly:'Monthly',yearly:'Yearly',
+      set_business:'Business Info',set_inv:'Invoice Elements',set_system:'System',biz_name:'Business name',biz_latin:'Latin name / subtitle',email:'Email',address:'Address',taxid:'Tax ID',pay_methods:'Payment methods',tax_rate:'Tax rate (%)',inv_prefix:'Invoice prefix',due_days:'Due terms (days)',signature:'Signature (draw)',theme:'Theme',currency:'Currency',language:'Language',backup:'Backup & Export',export_json:'Export data (JSON)',import_json:'Import data',clear:'Clear all data',thankyou:'Thank-you note',show_paid:'Show PAID stamp',show_tax:'Apply tax row',show_bal:'Show balance due',show_sig:'Show signature line',
+      book_couple:'Couple',event_date:'Shoot date',location:'Location',package:'Package',deposit:'Deposit',booked:'Deposit Paid',confirmed:'Confirmed',completed:'Completed',cancelled:'Cancelled',days_left:'days left',
+      cat:'Category',desc:'Description',amount:'Amount',method:'Method',source:'Source',print:'Print / PDF',add_item:'+ Add service',due:'Due date'},
+    shan:{
+      nav_dash:"ၼႃႈႁူဝ်",nav_inv:"Invoice",nav_book:"Pre-wedding Booking",nav_fin:"ပၢႆးငိုၼ်း",nav_note:"မၢႆတွင်း",
+      nav_set:"ၵၢၼ်တင်ႈ",month_income:"ငိုၼ်းၶဝ်ႈ လိူၼ်ၼႆႉ",month_exp:"ငိုၼ်းၸႂ်ႉၸၢႆႇ လိူၼ်ၼႆႉ",net:"ၼမ်ႉမျၢတ်ႈၵိုတ်း",pending:"ငိုၼ်းတိုၵ်ႉၵိုတ်း",
+      chart6:"ငိုၼ်းၶဝ်ႈ လႄႈ ငိုၼ်းၸႂ်ႉၸၢႆႇ 6 လိူၼ်",upcoming:"Booking ဢၼ်တေမႃး",recent:"Invoice မႂ်ႇၼႆႉ",add_inv:"+ Invoice မႂ်ႇ",no:"မၢႆ",
+      client:"ၵူၼ်းသိုဝ်ႉ",date:"မၢႆဝၼ်းထီႈ",total:"တင်းမူတ်း",balance:"ငိုၼ်းၵိုတ်း",status:"ငဝ်းလၢႆး",
+      action:"ၵၢၼ်ႁဵတ်း",view:"တူၺ်း",del:"ပႅတ်ႈ",paid:"ငိုၼ်းပၼ်ယဝ်ႉ",partial:"ပၼ်ငိုၼ်းဝႆႉၽၢႆႇၼိုင်ႈ",
+      unpaid:"ပႆႇပၼ်ငိုၼ်း",add_book:"+ Booking မႂ်ႇ",add_exp:"+ ထႅမ်ငိုၼ်းၸႂ်ႉၸၢႆႇ",add_note:"+ ထႅမ်မၢႆတွင်း",save:"ၵဵပ်းသိမ်း",
+      close:"ပိၵ်ႉ",phone:"ၾူၼ်း",note:"မၢႆတွင်း",discount:"လွင်ႈယွမ်းၶၼ်",paid_amt:"ငိုၼ်းဢၼ်ပၼ်ဝႆႉ",
+      fin_income:"ငိုၼ်းၶဝ်ႈ",fin_pl:"ၼမ်ႉမျၢတ်ႈ / လွင်ႈသုမ်း",fin_add_other:"+ ထႅမ်ငိုၼ်းၶဝ်ႈတၢင်ႇမဵဝ်း",fin_ledger:"သဵၼ်ႈမၢႆငိုၼ်းၶဝ်ႈ",fin_period:"ၶၢဝ်းယၢမ်း",
+      daily:"ၵူႈဝၼ်း",monthly:"ၵူႈလိူၼ်",yearly:"ၵူႈပီ",set_business:"ၶေႃႈမုၼ်းၵၢၼ်ငၢၼ်း",set_inv:"ၶေႃႈပႃးၼႂ်း Invoice",
+      set_system:"ပိူင်ႁဵတ်းၵၢၼ်",biz_name:"ၸိုဝ်ႈၵၢၼ်ငၢၼ်း",biz_latin:"ၸိုဝ်ႈ Latin / ၶေႃႈထပ်ႉ",email:"Email",address:"ႁဵင်းလိၵ်ႈ",
+      taxid:"မၢႆ Tax ID",pay_methods:"လၢႆးပၼ်ငိုၼ်း",tax_rate:"ၵႃႈၶွၼ်ႇ (%)",inv_prefix:"တူဝ်ဢွၼ် Invoice",due_days:"ဝၼ်းတေလႆႈပၼ်ငိုၼ်း",
+      signature:"လၢႆးမိုဝ်း (တႅမ်ႈ)",theme:"ႁၢင်ႈၽၢင်",currency:"ၸိူဝ်ႉငိုၼ်း",language:"ၽႃႇသႃႇ",backup:"ၵဵပ်းသိမ်း လႄႈ Export",
+      export_json:"ဢွၵ်ႇၶေႃႈမုၼ်း (JSON)",import_json:"ဢဝ်ၶေႃႈမုၼ်းၶဝ်ႈ",clear:"ယႃႉပႅတ်ႈၶေႃႈမုၼ်းတင်းမူတ်း",thankyou:"မၢႆတွင်းၶွပ်ႈၸႂ်",show_paid:"ၼႄမၢႆ PAID",
+      show_tax:"ၼႄတႅဝ်းၶွၼ်ႇ",show_bal:"ၼႄငိုၼ်းၵိုတ်း",show_sig:"ၼႄတႅဝ်းလၢႆးမိုဝ်း",book_couple:"ၵူပ်ႉၵူႈ",event_date:"ဝၼ်းထၢႆႇႁၢင်ႈ",
+      location:"တီႈ",package:"Package",deposit:"ငိုၼ်းၵႅဝ်ႊ",booked:"ငိုၼ်းၵႅဝ်ႊပၼ်ယဝ်ႉ",confirmed:"မၵ်းမၼ်ႈယဝ်ႉ",
+      completed:"ယဝ်ႉတူဝ်ႈ",cancelled:"ယႃႉပႅတ်ႈယဝ်ႉ",days_left:"ဝၼ်းၵိုတ်း",cat:"မဵဝ်း",desc:"ၶေႃႈသပ်းလႅင်း",
+      amount:"ႁူဝ်ၼပ်ႉငိုၼ်း",method:"လၢႆးပၼ်ငိုၼ်း",source:"ငဝ်ႈငႃႇ",print:"ဢိတ်ႇဢွၵ်ႇ / PDF",add_item:"+ ထႅမ်ၵၢၼ်ပၼ်ႁႅင်း",
+      due:"ဝၼ်းတေလႆႈပၼ်ငိုၼ်း"
+    }
+  };
+  Object.assign(I18N.en,{"edit": "Edit", "delete_confirm": "Delete?", "banner_hint": "Invoice Header Banner + Logo Card — to display, open Settings → Business Info and upload a banner or logo.", "client_info": "Client Address / Info", "address_hint": "Address / Facebook / details...", "service_hint": "Service name (choose or type)", "service": "Service", "qty": "Qty", "price": "Price", "subtotal": "Subtotal", "tax": "Tax", "balance_due": "Balance Due", "signature_title": "Authorized Signature", "wedding_date": "Wedding date", "done": "done", "pick_or_type": "choose or type", "optional": "optional", "ledger_auto": "Paid invoices sync automatically", "paid_invoice": "Paid Invoice", "edit_saved": "Saved", "service_required": "Add service + price", "client_required": "Client name required", "amount_required": "Amount required", "choose_or_type": "Choose or type"});
+  Object.assign(I18N.my,{"edit": "ပြင်ဆင်", "delete_confirm": "ဖျက်မလား?", "banner_hint": "Banner နှင့် Logo ပြရန် Settings → Business Info တွင် ပုံတင်ပါ။", "client_info": "ဖောက်သည်လိပ်စာ / အချက်အလက်", "address_hint": "လိပ်စာ / Facebook / အချက်အလက်...", "service_hint": "ဝန်ဆောင်မှုအမည် (ရွေး/ရိုက်)", "service": "ဝန်ဆောင်မှု", "qty": "အရေအတွက်", "price": "ဈေးနှုန်း", "subtotal": "အကြမ်းဖျဉ်းစုစုပေါင်း", "tax": "အခွန်", "balance_due": "ပေးရန်ကျန်ငွေ", "signature_title": "တာဝန်ခံ လက်မှတ်", "wedding_date": "မင်္ဂလာဆောင်နေ့", "done": "ပြီးသွားပြီ", "pick_or_type": "ရွေး/ရိုက်", "optional": "လိုအပ်မှ ရိုက်ထည့်ရန်", "ledger_auto": "ငွေပေးပြီး Invoice များ အလိုအလျောက် စာရင်းသွင်းမည်", "paid_invoice": "ငွေပေးပြီး Invoice", "edit_saved": "သိမ်းပြီးပါပြီ", "service_required": "ဝန်ဆောင်မှုနှင့် ဈေးနှုန်း ထည့်ပါ", "client_required": "ဖောက်သည်အမည် ထည့်ပါ", "amount_required": "ငွေပမာဏ ထည့်ပါ", "choose_or_type": "ရွေး/ရိုက်"});
+  Object.assign(I18N.shan,{"edit": "မႄး", "delete_confirm": "တေယႃႉပႅတ်ႈႁႃႉ?", "banner_hint": "ၶႂ်ႈၼႄ Banner လႄႈ Logo ၼႆ ၶဝ်ႈ Settings → ၶေႃႈမုၼ်းၵၢၼ်ငၢၼ်း သေတၢင်ႇႁၢင်ႈ။", "client_info": "တီႈယူႇ / ၶေႃႈမုၼ်းၵူၼ်းသိုဝ်ႉ", "address_hint": "တီႈယူႇ / Facebook / ၶေႃႈမုၼ်း...", "service_hint": "ၸိုဝ်ႈၵၢၼ်ပၼ်ႁႅင်း (လိူၵ်ႈ / တႅမ်ႈ)", "service": "ၵၢၼ်ပၼ်ႁႅင်း", "qty": "တၢင်းၼမ်", "price": "ၵႃႈၶၼ်", "subtotal": "ႁူမ်ႈၵႃႈၶၼ်", "tax": "ၶွၼ်ႇ", "balance_due": "ငိုၼ်းတိုၵ်ႉၵိုတ်း", "signature_title": "လၢႆးမိုဝ်းၽူႈမီးပုၼ်ႈၽွၼ်း", "wedding_date": "ဝၼ်းမင်ႇၵလႃႇ", "done": "ယဝ်ႉတူဝ်ႈ", "pick_or_type": "လိူၵ်ႈ / တႅမ်ႈ", "optional": "တႅမ်ႈမိူဝ်ႈလူဝ်ႇ", "ledger_auto": "Invoice ဢၼ်ပၼ်ငိုၼ်းယဝ်ႉ တေၶဝ်ႈသဵၼ်ႈမၢႆႁင်းၵူၺ်း", "paid_invoice": "Invoice ဢၼ်ပၼ်ငိုၼ်းယဝ်ႉ", "edit_saved": "ၵဵပ်းသိမ်းယဝ်ႉ", "service_required": "ထႅမ်ၵၢၼ်ပၼ်ႁႅင်း လႄႈ ၵႃႈၶၼ်", "client_required": "တႅမ်ႈၸိုဝ်ႈၵူၼ်းသိုဝ်ႉ", "amount_required": "တႅမ်ႈႁူဝ်ၼပ်ႉငိုၼ်း", "choose_or_type": "လိူၵ်ႈ / တႅမ်ႈ"});
+  var CUR={MMK:{sym:'Ks',name:'ကျပ်'},USD:{sym:'$',name:'USD'},THB:{sym:'฿',name:'THB'},CNY:{sym:'¥',name:'CNY'}};
+  var TEMPLATES=[
+    {id:'classic',name:'Classic',accent:'#1f2937',hdr:'border',align:'left'},
+    {id:'modern',name:'Modern',accent:'#2563eb',hdr:'solid',align:'left'},
+    {id:'minimal',name:'Minimal',accent:'#6b7280',hdr:'thin',align:'center'},
+    {id:'elegant',name:'Elegant',accent:'#92400e',hdr:'double',align:'left'},
+    {id:'creative',name:'Creative',accent:'#db2777',hdr:'solid',align:'left'},
+    {id:'studio',name:'Studio Pro',accent:'#0f766e',hdr:'solid',align:'left'},
+    {id:'gold',name:'Golden Luxury',accent:'#b8860b',hdr:'double',align:'center'},
+    {id:'corporate',name:'Clean Corporate',accent:'#1e40af',hdr:'solid',align:'left'},
+    {id:'dark',name:'Dark Premium',accent:'#111827',hdr:'solid',align:'left'},
+    {id:'pastel',name:'Pastel Soft',accent:'#f472b6',hdr:'border',align:'left'}
+  ];
+  var PAPERS=[{id:'a4',name:'A4',w:794},{id:'a5',name:'A5',w:559},{id:'a6',name:'A6',w:420},{id:'5x7',name:'5×7',w:480},{id:'4r',name:'4R',w:480},{id:'6r',name:'6R',w:600},{id:'8r',name:'8R',w:720},{id:'letter',name:'Letter',w:816},{id:'legal',name:'Legal',w:816},{id:'square',name:'Square',w:720}];
+  window.__paper='a4';
+  var THEMES={
+    forest:{bg:'#1b2a1f',card:'#243629',card2:'#2c4032',text:'#eef2ec',muted:'#9ab09a',accent:'#5cb85c',accentSoft:'rgba(92,184,92,.16)',danger:'#e05c5c',dangerSoft:'rgba(224,92,92,.14)',border:'rgba(154,176,154,.18)',btnText:'#0e1a12'},
+    dark:{bg:'#141824',card:'#1e2433',card2:'#262e42',text:'#e8ecf4',muted:'#8b9ab8',accent:'#5b8def',accentSoft:'rgba(91,141,239,.16)',danger:'#e05c5c',dangerSoft:'rgba(224,92,92,.14)',border:'rgba(139,154,184,.18)',btnText:'#0e1420'},
+    ivory:{bg:'#f7f5f0',card:'#ffffff',card2:'#f0ede5',text:'#1f2937',muted:'#6b7280',accent:'#b8860b',accentSoft:'rgba(184,134,11,.14)',danger:'#c0392b',dangerSoft:'rgba(192,57,43,.12)',border:'rgba(31,41,55,.1)',btnText:'#fff'},
+    mustard:{bg:'#2a2418',card:'#362e1e',card2:'#403624',text:'#f4ecd8',muted:'#b8a878',accent:'#d4a017',accentSoft:'rgba(212,160,23,.18)',danger:'#e05c5c',dangerSoft:'rgba(224,92,92,.14)',border:'rgba(184,168,120,.2)',btnText:'#2a2418'}
+  };
+
+  var KEY='photoStudio_v2';
+  var state={invoices:[],bookings:[],notes:[],expenses:[],otherIncome:[],
+    settings:{lang:'my',theme:'forest',currency:'MMK',taxRate:0,invPrefix:'LM',dueDays:7,
+      payMethods:['Cash','KBZPay','WavePay','AYA Pay','Bank Transfer','CB Pay'],
+      signature:'',thankyou:'Thank you for your business!',
+      showPaid:true,showTax:true,showBal:true,showSig:true,
+      invTemplate:'classic',invColor:'#1f2937',
+      logo:'',banner:'',social:{wechat:'',telegram:'',facebook:'',tiktok:'',website:''}},
+    business:{name:'လၢၼ်ႉထီႇၶႅပ်းၵႂၢင်ႈ LM STUDIO',latin:'LM STUDIO',phone:'09 427236161',email:'lmproduction1993@gmail.com',addr1:'2nd Ward,',addr2:'Shan State Tangyan Township',taxId:''}};
+  function load(){try{var d=JSON.parse(localStorage.getItem(KEY));if(d){state=JSON.parse(JSON.stringify(state));Object.assign(state,d);if(d.settings)Object.assign(state.settings,d.settings);if(d.business)Object.assign(state.business,d.business);}}catch(e){}
+    if(!state.settings.social)state.settings.social={wechat:'',telegram:'',facebook:'',tiktok:'',website:''};
+    if(state.settings.logo===undefined)state.settings.logo='';
+    if(state.settings.banner===undefined)state.settings.banner='';
+    if(!state.settings.payMethods)state.settings.payMethods=['Cash','KBZPay','WavePay','AYA Pay','Bank Transfer','CB Pay'];
+  }
+  function save(){localStorage.setItem(KEY,JSON.stringify(state));}
+  function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,6);}
+  function today(){var d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+  function mk(d){return (d||today()).slice(0,7);}
+  function yr(d){return (d||today()).slice(0,4);}
+  function t(k){var l=state.settings.lang;return (I18N[l]&&I18N[l][k])?I18N[l][k]:(I18N.en[k]||k);}
+  function fmt(n){n=Number(n)||0;var c=CUR[state.settings.currency]||CUR.MMK;return n.toLocaleString('en-US')+' '+c.sym;}
+  load();
+  if(!state.business.email)state.business.email='lmproduction1993@gmail.com';
+  if(state.invoices.length===0&&state.bookings.length===0&&state.expenses.length===0){
+    var td=today();
+    state.invoices=[{id:uid(),no:'LM-2026-0001',client:'Phaung + Nang',phone:'091234567',items:[{name:'Pre-wedding Gold Package',qty:1,price:1200000},{name:'Album 12 inch',qty:1,price:150000}],discount:50000,paid:1300000,status:'paid',date:td,due:td,method:'KBZPay',note:'Bagan'},
+      {id:uid(),no:'LM-2026-0002',client:'Zaw Zaw Family',phone:'097654321',items:[{name:'Family Portrait',qty:1,price:120000}],discount:0,paid:50000,status:'partial',date:td,due:td,method:'Cash',note:''}];
+    state.bookings=[{id:uid(),couple:'Sai Aung + Nang Hseng',phone:'091112233',bookDate:td,eventDate:'2026-11-15',location:'Bagan',package:'Gold - 1,200,000 Ks',deposit:500000,total:1200000,status:'confirmed',note:'7am session'}];
+    state.expenses=[{id:uid(),cat:'Equipment',desc:'Memory Card 128GB x2',amount:60000,date:td},{id:uid(),cat:'Rent',desc:'Studio rent',amount:250000,date:td}];
+    state.notes=[{id:uid(),color:'#2c4032',text:'Pre-wedding sample album ပြင်ဆင်ရန်',time:td}];
+    save();
+  }
+
+  var SERVICES=['Pre-wedding Package','Wedding Day Coverage','Portrait Session','Family Portrait','Event Coverage','Graduation Photo','Photo Album','Photo Print','Retouching / Editing','Drone Shot','Video Cinematography','Makeup Artist','Costume / Prop','Other'];
+  var EXP_CATS=['Equipment','Rent','Utilities','Salary','Marketing','Transport','Props/Costume','Printing','Other'];
+  var INCOME_CATS=['Sales Income','Booking Deposit','Printing','Other'];
+  var NOTE_COLORS=['#2c4032','#262e42','#403624','#3a2a3a','#2a3a3a'];
+
+  function applyTheme(){var th=THEMES[state.settings.theme]||THEMES.forest;var r=document.documentElement.style;
+    r.setProperty('--bg',th.bg);r.setProperty('--card',th.card);r.setProperty('--card2',th.card2);r.setProperty('--text',th.text);r.setProperty('--muted',th.muted);r.setProperty('--accent',th.accent);r.setProperty('--accent-soft',th.accentSoft);r.setProperty('--danger',th.danger);r.setProperty('--danger-soft',th.dangerSoft);r.setProperty('--border',th.border);r.setProperty('--btnText',th.btnText);}
+  applyTheme();
+
+  function invSub(i){var s=0;i.items.forEach(function(it){s+=Number(it.qty)*Number(it.price);});return s-Number(i.discount||0);}
+  function invTax(i){return state.settings.showTax?invSub(i)*Number(state.settings.taxRate||0)/100:0;}
+  function invTotal(i){return invSub(i)+invTax(i);}
+  function invBal(i){return invTotal(i)-Number(i.paid||0);}
+  function mIncome(k){var s=0;state.invoices.forEach(function(i){if(mk(i.date)===k)s+=Number(i.paid||0);});state.otherIncome.forEach(function(o){if(mk(o.date)===k)s+=Number(o.amount||0);});return s;}
+  function mExpense(k){var s=0;state.expenses.forEach(function(e){if(mk(e.date)===k)s+=Number(e.amount||0);});return s;}
+
+  var current='dashboard';
+  document.querySelectorAll('.nav-btn').forEach(function(b){b.addEventListener('click',function(){
+    document.querySelectorAll('.nav-btn').forEach(function(x){x.classList.remove('active');});b.classList.add('active');current=b.dataset.view;render();});});
+  document.getElementById('langSel').value=state.settings.lang;
+  document.getElementById('curSel').value=state.settings.currency;
+  document.getElementById('langSel').addEventListener('change',function(){state.settings.lang=this.value;save();applyI18nUI();render();});
+  document.getElementById('curSel').addEventListener('change',function(){state.settings.currency=this.value;save();render();});
+  function applyI18nUI(){document.documentElement.lang=state.settings.lang==='shan'?'shn':state.settings.lang;document.querySelectorAll('[data-i18n]').forEach(function(el){el.textContent=t(el.dataset.i18n);});document.getElementById('bizNameHeader').textContent=state.business.latin||state.business.name;document.getElementById('bizSubHeader').textContent=state.business.name;var hl=document.getElementById('headerLogo');var lt=document.getElementById('logoTile');if(state.settings.logo){hl.src=state.settings.logo;hl.style.display='inline-block';lt.style.display='none';}else{hl.style.display='none';lt.style.display='flex';}}
+  applyI18nUI();
+
+  function render(){try{
+    document.getElementById('topBanner').innerHTML='';
+    if(current==='dashboard')renderDash();
+    else if(current==='invoices')renderInv();
+    else if(current==='bookings')renderBook();
+    else if(current==='finance')renderFin();
+    else if(current==='notes')renderNotes();
+    else if(current==='settings')renderSet();
+  }catch(e){console.error(e);document.getElementById('view').innerHTML='<div class="card" style="padding:20px;color:var(--danger);font-size:13px;">Error: '+e.message+'<br><br><button class="btn-ghost" onclick="localStorage.removeItem(\'photoStudio_v2\');location.reload()">Reset Data</button></div>';}}
+
+  function renderDash(){
+    var k=mk(),inc=mIncome(k),exp=mExpense(k),net=inc-exp,pend=0,pc=0;
+    state.invoices.forEach(function(i){if(i.status!=='paid'){pend+=invBal(i);pc++;}});
+    var up=state.bookings.filter(function(b){return b.status!=='completed'&&b.status!=='cancelled'&&b.eventDate>=today();}).sort(function(a,b){return a.eventDate<b.eventDate?-1:1;});
+    var cards=[[t('month_income'),fmt(inc),'var(--accent)','↑'],[t('month_exp'),fmt(exp),'var(--danger)','↓'],[t('net'),fmt(net),net>=0?'var(--accent)':'var(--danger)','='],[t('pending'),fmt(pend)+' ('+pc+')','var(--accent2,#c9a86a)','!']];
+    var bannerHtml=state.settings.banner?'<div style="margin-bottom:14px;border-radius:14px;overflow:hidden;position:relative;box-shadow:0 4px 14px rgba(0,0,0,.25);"><img src="'+state.settings.banner+'" style="width:100%;max-height:210px;object-fit:cover;display:block;"></div>':'<div class="card" style="margin-bottom:14px;padding:16px;text-align:center;cursor:pointer;" onclick="window.__goSet()"><div style="font-size:12px;color:var(--muted);">'+t('banner_hint')+'</div></div>';
+    document.getElementById('topBanner').innerHTML=bannerHtml;
+    var h='<div style="display:flex;flex-wrap:wrap;gap:12px;margin-bottom:16px;">';
+    cards.forEach(function(c){h+='<div class="card" style="flex:1 1 180px;min-width:160px;padding:16px;"><div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;"><span style="color:'+c[2]+';font-weight:700;">'+c[3]+'</span><span style="font-size:11px;color:var(--muted);font-weight:600;">'+c[0]+'</span></div><div style="font-size:20px;font-weight:800;font-variant-numeric:tabular-nums;">'+c[1]+'</div></div>';});
+    h+='</div><div style="display:flex;flex-wrap:wrap;gap:12px;">';
+    h+='<div class="card" style="flex:2 1 380px;min-width:280px;padding:16px;"><h3 style="margin:0 0 10px;font-size:14px;font-weight:700;">'+t('chart6')+'</h3><div id="chart1" style="height:300px;width:100%;"></div></div>';
+    h+='<div class="card" style="flex:1 1 240px;min-width:220px;padding:16px;"><h3 style="margin:0 0 10px;font-size:14px;font-weight:700;">'+t('upcoming')+'</h3>';
+    if(up.length===0)h+='<p style="color:var(--muted);font-size:12px;">—</p>';
+    up.slice(0,5).forEach(function(b){var d=Math.ceil((new Date(b.eventDate)-new Date(today()))/86400000);
+      h+='<div style="padding:8px 0;border-bottom:1px solid var(--border);"><div style="font-size:12px;font-weight:600;">'+b.couple+'</div><div style="font-size:11px;color:var(--muted);margin-top:2px;">'+b.eventDate+' · '+b.location+' · <span style="color:var(--accent);">'+d+' '+t('days_left')+'</span></div></div>';});
+    h+='</div></div>';
+    h+='<div class="card" style="margin-top:12px;padding:16px;"><h3 style="margin:0 0 10px;font-size:14px;font-weight:700;">'+t('recent')+'</h3><div class="scroll-x"><table style="width:100%;border-collapse:collapse;font-size:12px;min-width:520px;"><thead><tr style="color:var(--muted);font-size:10px;text-transform:uppercase;"><th style="text-align:left;padding:7px 5px;">'+t('no')+'</th><th style="text-align:left;padding:7px 5px;">'+t('client')+'</th><th style="text-align:right;padding:7px 5px;">'+t('total')+'</th><th style="text-align:right;padding:7px 5px;">'+t('paid_amt')+'</th><th style="text-align:center;padding:7px 5px;">'+t('status')+'</th></tr></thead><tbody>';
+    state.invoices.slice().reverse().slice(0,5).forEach(function(i){h+='<tr class="tbl-row"><td style="padding:8px 5px;">'+i.no+'</td><td style="padding:8px 5px;">'+i.client+'</td><td style="padding:8px 5px;text-align:right;font-variant-numeric:tabular-nums;">'+fmt(invTotal(i))+'</td><td style="padding:8px 5px;text-align:right;font-variant-numeric:tabular-nums;">'+fmt(i.paid)+'</td><td style="padding:8px 5px;text-align:center;"><span class="pill pill-'+i.status+'">'+t(i.status)+'</span></td></tr>';});
+    h+='</tbody></table></div></div>';
+    document.getElementById('view').innerHTML=h;initChart();
+  }
+  function initChart(){
+    (function(n){try{var el=document.getElementById('chart1');if(!el)return;if(typeof echarts==='undefined'){if(n<40){setTimeout(function(){initChart()},250);return;}return;}
+    var ms=[],ia=[],ea=[];var d=new Date();
+    for(var k=5;k>=0;k--){var dd=new Date(d.getFullYear(),d.getMonth()-k,1);var key=dd.getFullYear()+'-'+String(dd.getMonth()+1).padStart(2,'0');ms.push(String(dd.getMonth()+1)+'/'+String(dd.getFullYear()).slice(2));ia.push(mIncome(key));ea.push(mExpense(key));}
+    var st=getComputedStyle(document.documentElement);var acc=st.getPropertyValue('--accent').trim()||'#5cb85c';var mut=st.getPropertyValue('--muted').trim()||'#999';var brd=st.getPropertyValue('--border').trim()||'rgba(0,0,0,.1)';
+    var c=echarts.init(el);c.setOption({backgroundColor:'transparent',tooltip:{trigger:'axis',backgroundColor:st.getPropertyValue('--card2').trim()||'#333',borderColor:brd,textStyle:{color:st.getPropertyValue('--text').trim()||'#fff'}},legend:{data:[t('fin_income'),t('month_exp')],textStyle:{color:mut},top:0},grid:{left:'3%',right:'4%',bottom:'3%',top:36,containLabel:true},xAxis:{type:'category',data:ms,axisLabel:{color:mut},axisTick:{show:false}},yAxis:{type:'value',axisLabel:{color:mut,formatter:function(v){return v>=1000000?(v/1000000)+'M':v>=1000?(v/1000)+'K':v;}},splitLine:{lineStyle:{color:brd}}},series:[{name:t('fin_income'),type:'bar',data:ia,itemStyle:{color:acc,borderRadius:[5,5,0,0]},barWidth:'30%'},{name:t('month_exp'),type:'bar',data:ea,itemStyle:{color:'#e05c5c',borderRadius:[5,5,0,0]},barWidth:'30%'}]});
+    window.addEventListener('resize',function(){c.resize();});}catch(e){console.error(e);}})(0);
+  }
+
+  function renderInv(){
+    var h='<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:12px;"><h2 style="margin:0;font-size:17px;font-weight:800;">'+t('nav_inv')+'</h2><button class="btn-primary" onclick="window.__addInv()">'+t('add_inv')+'</button></div>';
+    h+='<div class="card scroll-x" style="padding:6px 12px;"><table style="width:100%;border-collapse:collapse;font-size:12px;min-width:680px;"><thead><tr style="color:var(--muted);font-size:10px;text-transform:uppercase;"><th style="text-align:left;padding:9px 5px;">'+t('no')+'</th><th style="text-align:left;padding:9px 5px;">'+t('client')+'</th><th style="text-align:left;padding:9px 5px;">'+t('date')+'</th><th style="text-align:left;padding:9px 5px;">'+t('method')+'</th><th style="text-align:right;padding:9px 5px;">'+t('total')+'</th><th style="text-align:right;padding:9px 5px;">'+t('balance')+'</th><th style="text-align:center;padding:9px 5px;">'+t('status')+'</th><th style="text-align:center;padding:9px 5px;">'+t('action')+'</th></tr></thead><tbody>';
+    if(state.invoices.length===0)h+='<tr><td colspan="8" style="padding:22px;text-align:center;color:var(--muted);">—</td></tr>';
+    state.invoices.slice().reverse().forEach(function(i){var bal=invBal(i);
+      h+='<tr class="tbl-row"><td style="padding:9px 5px;font-weight:600;">'+i.no+'</td><td style="padding:9px 5px;">'+i.client+'<div style="font-size:10px;color:var(--muted);">'+i.phone+'</div></td><td style="padding:9px 5px;color:var(--muted);">'+i.date+'</td><td style="padding:9px 5px;font-size:11px;">'+(i.method||'-')+'</td><td style="padding:9px 5px;text-align:right;font-variant-numeric:tabular-nums;">'+fmt(invTotal(i))+'</td><td style="padding:9px 5px;text-align:right;font-variant-numeric:tabular-nums;color:'+(bal>0?'var(--accent2,#c9a86a)':'var(--accent)')+';">'+fmt(bal)+'</td><td style="padding:9px 5px;text-align:center;"><select class="field" style="width:auto;padding:3px 6px;font-size:10px;" onchange="window.__setInv(\''+i.id+'\',this.value)"><option value="unpaid"'+(i.status==='unpaid'?' selected':'')+'>'+t('unpaid')+'</option><option value="partial"'+(i.status==='partial'?' selected':'')+'>'+t('partial')+'</option><option value="paid"'+(i.status==='paid'?' selected':'')+'>'+t('paid')+'</option></select></td><td style="padding:9px 5px;text-align:center;white-space:nowrap;"><button class="btn-ghost" style="padding:3px 7px;font-size:10px;" onclick="window.__editInv(\''+i.id+'\')">'+t('edit')+'</button> <button class="btn-ghost" style="padding:3px 7px;font-size:10px;" onclick="window.__viewInv(\''+i.id+'\')">'+t('view')+'</button> <button class="btn-danger" onclick="window.__delInv(\''+i.id+'\')">'+t('del')+'</button></td></tr>';});
+    h+='</tbody></table></div>';
+    document.getElementById('view').innerHTML=h;
+  }
+  window.__setInv=function(id,v){var i=state.invoices.find(function(x){return x.id===id;});if(i){i.status=v;if(v==='paid')i.paid=invTotal(i);save();render();}};
+  window.__delInv=function(id){if(!confirm(t('delete_confirm')))return;state.invoices=state.invoices.filter(function(x){return x.id!==id;});save();render();};
+  window.__editId=null;
+  window.__editInv=function(id){var i=state.invoices.find(function(x){return x.id===id;});if(!i)return;window.__editId=id;window.__addInv();document.getElementById('f_no').value=i.no;document.getElementById('f_date').value=i.date;document.getElementById('f_client').value=i.client;document.getElementById('f_phone').value=i.phone||'';document.getElementById('f_due').value=i.due||i.date;document.getElementById('f_method').value=i.method||'Cash';document.getElementById('f_addr').value=i.addr||'';document.getElementById('f_disc').value=i.discount||0;document.getElementById('f_paid').value=i.paid||0;document.getElementById('f_note').value=i.note||'';var box=document.getElementById('itemsBox');box.innerHTML='';i.items.forEach(function(it){window.__addRow();var r=box.children[box.children.length-1];r.querySelector('.in').value=it.name;r.querySelector('.iq').value=it.qty;r.querySelector('.ip').value=it.price;});};
+  window.__addInv=function(){
+    var pre=state.settings.invPrefix||'INV';var no=pre+'-'+new Date().getFullYear()+'-'+String(state.invoices.length+1).padStart(4,'0');
+    var mOpts=state.settings.payMethods.map(function(m){return '<option>'+m+'</option>';}).join('');
+    var h='<div class="modal-bg" onclick="if(event.target===this)window.__closeM()"><div class="modal"><h3 style="margin:0 0 14px;font-size:16px;font-weight:800;">'+t('add_inv')+'</h3>'+
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">'+
+    '<div><label style="font-size:11px;color:var(--muted);">'+t('no')+'</label><input class="field" id="f_no" value="'+no+'"></div>'+
+    '<div><label style="font-size:11px;color:var(--muted);">'+t('date')+'</label><input class="field" id="f_date" type="date" value="'+today()+'"></div>'+
+    '<div><label style="font-size:11px;color:var(--muted);">'+t('client')+'</label><input class="field" id="f_client" placeholder="Name"></div>'+
+    '<div><label style="font-size:11px;color:var(--muted);">'+t('phone')+'</label><input class="field" id="f_phone"></div>'+
+    '<div><label style="font-size:11px;color:var(--muted);">'+t('due')+'</label><input class="field" id="f_due" type="date" value="'+today()+'"></div>'+
+    '<div><label style="font-size:11px;color:var(--muted);">'+t('method')+'</label><select class="field" id="f_method">'+mOpts+'</select></div>'+
+    '<div style="grid-column:span 2;"><label style="font-size:11px;color:var(--muted);">'+t('client_info')+'</label><input class="field" id="f_addr" placeholder="'+t('address_hint')+'"></div>'+
+    '</div><div id="itemsBox" style="margin-bottom:8px;"></div>'+
+    '<datalist id="svcDatalist">'+SERVICES.map(function(s){return '<option value="'+s+'">';}).join('')+'</datalist>'+
+    '<button class="btn-ghost" style="width:100%;margin-bottom:10px;font-size:12px;" onclick="window.__addRow()">'+t('add_item')+'</button>'+
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;"><div><label style="font-size:11px;color:var(--muted);">'+t('discount')+'</label><input class="field" id="f_disc" type="number" value="0"></div><div><label style="font-size:11px;color:var(--muted);">'+t('paid_amt')+'</label><input class="field" id="f_paid" type="number" value="0"></div></div>'+
+    '<div style="margin-bottom:12px;"><label style="font-size:11px;color:var(--muted);">'+t('note')+'</label><input class="field" id="f_note"></div>'+
+    '<div style="display:flex;gap:8px;justify-content:flex-end;"><button class="btn-ghost" onclick="window.__closeM()">'+t('close')+'</button><button class="btn-primary" onclick="window.__saveInv()">'+t('save')+'</button></div></div></div>';
+    document.getElementById('modalRoot').innerHTML=h;window.__addRow();
+  };
+  window.__addRow=function(){var box=document.getElementById('itemsBox');var d=document.createElement('div');d.style.cssText='display:grid;grid-template-columns:2fr 54px 1fr 28px;gap:6px;margin-bottom:6px;align-items:center;';
+    var opts=SERVICES.map(function(s){return '<option>'+s+'</option>';}).join('');
+    d.innerHTML='<input class="field in" list="svcDatalist" style="font-size:11px;padding:6px;" placeholder="'+t('service_hint')+'"><input class="field iq" type="number" value="1" style="padding:6px;font-size:11px;"><input class="field ip" type="number" placeholder="'+t('price')+'" style="padding:6px;font-size:11px;"><button class="btn-danger" style="padding:2px 5px;" onclick="this.parentElement.remove()">✕</button>';
+    box.appendChild(d);};
+  window.__saveInv=function(){
+    var nm=[],qty=[],pr=[];document.querySelectorAll('.in').forEach(function(e){nm.push(e.value);});document.querySelectorAll('.iq').forEach(function(e){qty.push(Number(e.value)||1);});document.querySelectorAll('.ip').forEach(function(e){pr.push(Number(e.value)||0);});
+    var items=[];for(var k=0;k<nm.length;k++)if(pr[k]>0)items.push({name:nm[k],qty:qty[k],price:pr[k]});
+    if(items.length===0){alert(t('service_required'));return;}
+    var cl=document.getElementById('f_client').value.trim();if(!cl){alert(t('client_required'));return;}
+    var disc=Number(document.getElementById('f_disc').value)||0,paid=Number(document.getElementById('f_paid').value)||0;
+    var tmp={items:items,discount:disc};var tot=invSub(tmp)+(state.settings.showTax?invSub(tmp)*Number(state.settings.taxRate||0)/100:0);
+    var st=paid<=0?'unpaid':(paid>=tot?'paid':'partial');
+    var obj={no:document.getElementById('f_no').value,client:cl,phone:document.getElementById('f_phone').value,items:items,discount:disc,paid:paid,status:st,date:document.getElementById('f_date').value,due:document.getElementById('f_due').value,method:document.getElementById('f_method').value,addr:document.getElementById('f_addr').value,note:document.getElementById('f_note').value};
+    if(window.__editId){var idx=state.invoices.findIndex(function(x){return x.id===window.__editId;});if(idx>=0)state.invoices[idx]=Object.assign({},state.invoices[idx],obj);window.__editId=null;}else{obj.id=uid();state.invoices.push(obj);}
+    save();window.__closeM();render();};
+  window.__closeM=function(){document.getElementById('modalRoot').innerHTML='';};
+  window.__exportJPEG=function(){
+    if(typeof html2canvas==='undefined'){alert('Library still loading — please try again in a moment.');return;}
+    var paper=window.__paper||'a4';
+    var pObj=PAPERS.find(function(x){return x.id===paper;});var w=pObj?pObj.w:794;
+    var pa=document.getElementById('printArea');
+    var target=pa.firstChild;if(!target){alert('No invoice to export.');return;}
+    pa.style.cssText='display:block;position:absolute;left:-12000px;top:0;width:'+w+'px;background:#fff;z-index:1;';
+    target.style.width=w+'px';target.style.boxSizing='border-box';
+    var doCapture=function(){
+      html2canvas(target,{scale:2,backgroundColor:'#ffffff',logging:false,useCORS:true}).then(function(canvas){
+        pa.style.cssText='display:none;';
+        var a=document.createElement('a');a.download='invoice_'+Date.now()+'.jpg';a.href=canvas.toDataURL('image/jpeg',0.92);a.click();
+      }).catch(function(){pa.style.cssText='display:none;';alert('Export failed — please try again.');});
+    };
+    if(document.fonts&&document.fonts.ready){document.fonts.ready.then(function(){setTimeout(doCapture,400);});}else{setTimeout(doCapture,400);}
+  };
+  window.__setPaper=function(id){window.__paper=id;if(window.__viewingId)window.__viewInv(window.__viewingId);};
+
+  window.__viewInv=function(id){
+    var i=state.invoices.find(function(x){return x.id===id;});if(!i)return;
+    var sub=invSub(i),tax=invTax(i),tot=invTotal(i),bal=tot-Number(i.paid||0);
+    var rows=i.items.map(function(it){return '<tr style="border-bottom:1px solid #ddd;"><td style="padding:7px 4px;">'+it.name+'</td><td style="padding:7px 4px;text-align:center;">'+it.qty+'</td><td style="padding:7px 4px;text-align:right;">'+Number(it.price).toLocaleString()+'</td><td style="padding:7px 4px;text-align:right;">'+(it.qty*it.price).toLocaleString()+'</td></tr>';}).join('');
+    var c=CUR[state.settings.currency]||CUR.MMK;
+    var banner=state.settings.banner?'<img src="'+state.settings.banner+'" style="width:100%;border-radius:6px;margin-bottom:12px;max-height:90px;object-fit:cover;">':'';
+    var logo=state.settings.logo?'<img src="'+state.settings.logo+'" style="height:50px;margin-right:12px;border-radius:6px;flex-shrink:0;">':'';
+    var soc=state.settings.social||{};var socLine=[];if(soc.wechat)socLine.push('WeChat: '+soc.wechat);if(soc.telegram)socLine.push('Telegram: '+soc.telegram);if(soc.facebook)socLine.push('Facebook: '+soc.facebook);if(soc.tiktok)socLine.push('TikTok: '+soc.tiktok);if(soc.website)socLine.push(soc.website);var socHtml=socLine.length?'<div style="font-size:11px;color:#555;line-height:1.8;">'+socLine.join('<br>')+'</div>':'';
+    var tpl=state.settings.invTemplate||'classic';
+    var tplObj=TEMPLATES.find(function(x){return x.id===tpl;})||TEMPLATES[0];
+    var acc=state.settings.invColor||tplObj.accent;
+    var darkHdr=(tplObj.hdr==='solid');
+    var hdrStyle='';
+    if(tplObj.hdr==='solid')hdrStyle='background:'+acc+';color:#fff;padding:16px 20px;border-radius:10px;margin-bottom:18px;';
+    else if(tplObj.hdr==='double')hdrStyle='border-top:3px double '+acc+';border-bottom:3px double '+acc+';padding:10px 0;margin-bottom:18px;';
+    else if(tplObj.hdr==='thin')hdrStyle='border-bottom:1px solid '+acc+';padding-bottom:8px;margin-bottom:18px;text-align:center;';
+    else hdrStyle='border-bottom:3px solid '+acc+';padding-bottom:10px;margin-bottom:18px;';
+    var titleCol=darkHdr?'#fff':acc;
+    var tblBg=darkHdr?acc:(acc+'22');var tblText=darkHdr?'#fff':'#222';
+    function genQR(text){try{if(typeof QRCode==='undefined'||!text)return '';var qd=document.createElement('div');new QRCode(qd,{text:text,width:160,height:160,correctLevel:QRCode.CorrectLevel.M});var cv=qd.querySelector('canvas');return cv?cv.toDataURL('image/png'):'';}catch(e){return '';}}
+    var qr1=genQR(soc.website||soc.facebook||'');
+    var qr2=genQR(soc.telegram?('https://t.me/'+soc.telegram.replace('@','')):(soc.wechat?('WECHAT:'+soc.wechat):''));
+    var qr3=genQR(state.business.phone?('tel:'+String(state.business.phone).replace(/[^0-9+]/g,'')):'');
+    var qrHtml='';if(qr1||qr2||qr3){qrHtml='<div style="display:flex;gap:14px;justify-content:flex-end;flex-wrap:wrap;">';if(qr1)qrHtml+='<div style="text-align:center;"><img src="'+qr1+'" style="width:72px;height:72px;"><div style="font-size:8px;color:#777;margin-top:2px;">Website/FB</div></div>';if(qr2)qrHtml+='<div style="text-align:center;"><img src="'+qr2+'" style="width:72px;height:72px;"><div style="font-size:8px;color:#777;margin-top:2px;">Telegram/WeChat</div></div>';if(qr3)qrHtml+='<div style="text-align:center;"><img src="'+qr3+'" style="width:72px;height:72px;"><div style="font-size:8px;color:#777;margin-top:2px;">Call Us</div></div>';qrHtml+='</div>';}
+    if(soc.wechatQR)qrHtml='<div style="text-align:center;"><img src="'+soc.wechatQR+'" style="width:90px;height:90px;border-radius:6px;background:#fff;padding:3px;"><div style="font-size:9px;color:#777;margin-top:3px;">WeChat</div></div>';
+    var stamp=state.settings.showPaid&&i.status==='paid'?'<div style="position:absolute;top:40%;left:50%;transform:translate(-50%,-50%) rotate(-25deg);border:5px solid #c00;color:#c00;font-size:60px;font-weight:800;padding:10px 40px;opacity:.25;letter-spacing:8px;">PAID</div>':'';
+    var sig=state.settings.signature?'<img src="'+state.settings.signature+'" style="height:60px;margin-top:20px;">':(state.settings.showSig?'<div style="margin-top:40px;border-top:1px solid #000;display:inline-block;padding-top:4px;font-size:12px;">'+t('signature_title')+'</div>':'');
+    var pa=document.getElementById('printArea');pa.style.display='block';
+    pa.innerHTML='<div style="padding:30px;font-family:sans-serif;color:#000;position:relative;">'+banner+stamp+
+    '<div style="display:flex;justify-content:space-between;'+hdrStyle+'"><div style="display:flex;align-items:flex-start;">'+logo+'<div><h2 style="margin:0;font-size:20px;color:'+titleCol+';">'+state.business.name+'</h2><p style="margin:3px 0;font-size:11px;color:'+(darkHdr?'rgba(255,255,255,.85)':'#555')+';">'+state.business.latin+'</p><p style="margin:3px 0;font-size:11px;color:'+(darkHdr?'rgba(255,255,255,.85)':'#555')+';">'+state.business.addr1+' '+state.business.addr2+' · '+state.business.phone+(state.business.email?' · '+state.business.email:'')+(state.business.taxId?' · Tax: '+state.business.taxId:'')+'</p></div></div><div style="text-align:right;"><h3 style="margin:0;font-size:18px;color:'+titleCol+';">INVOICE</h3><p style="margin:3px 0;font-size:12px;">'+i.no+'</p><p style="margin:0;font-size:11px;">'+i.date+(i.due?' · '+t('due')+': '+i.due:'')+'</p></div></div>'+
+    '<p style="margin:0 0 3px;font-size:13px;"><strong>'+t('client')+':</strong> '+i.client+(i.phone?' ('+i.phone+')':'')+(i.method?' · '+t('method')+': '+i.method:'')+'</p>'+(i.addr?'<p style="margin:0 0 3px;font-size:11px;color:#555;">'+i.addr+'</p>':'')+(i.note?'<p style="margin:0 0 14px;font-size:12px;color:#555;">'+t('note')+': '+i.note+'</p>':'<div style="height:14px;"></div>')+
+    '<table style="width:100%;border-collapse:collapse;font-size:13px;"><thead><tr style="background:'+tblBg+';color:'+tblText+';"><th style="padding:7px 4px;text-align:left;">'+t('service')+'</th><th style="padding:7px 4px;text-align:center;">'+t('qty')+'</th><th style="padding:7px 4px;text-align:right;">'+t('price')+' ('+c.sym+')</th><th style="padding:7px 4px;text-align:right;">'+t('amount')+' ('+c.sym+')</th></tr></thead><tbody>'+rows+'</tbody></table>'+
+    '<div style="margin-top:14px;text-align:right;font-size:14px;line-height:1.8;"><div>'+t('subtotal')+': '+(sub+Number(i.discount||0)).toLocaleString()+' '+c.sym+'</div>'+(i.discount>0?'<div>'+t('discount')+': -'+Number(i.discount).toLocaleString()+' '+c.sym+'</div>':'')+(state.settings.showTax&&tax>0?'<div>'+t('tax')+' ('+state.settings.taxRate+'%): +'+tax.toLocaleString()+' '+c.sym+'</div>':'')+'<div><strong>'+t('total')+': '+tot.toLocaleString()+' '+c.sym+'</strong></div><div>'+t('paid_amt')+': '+Number(i.paid||0).toLocaleString()+' '+c.sym+'</div>'+(state.settings.showBal?'<div style="color:'+(bal>0?'#c00':'#080')+';font-size:16px;"><strong>'+t('balance_due')+': '+bal.toLocaleString()+' '+c.sym+'</strong></div>':'')+'</div>'+
+    '<div style="margin-top:20px;">'+sig+'</div>'+
+    '<div style="margin-top:24px;padding-top:12px;border-top:1px dashed #999;display:flex;justify-content:space-between;align-items:flex-end;gap:20px;"><div style="flex:1;">'+socHtml+'<p style="margin-top:10px;font-size:12px;color:#777;">'+state.settings.thankyou+'</p></div>'+qrHtml+'</div></div>';
+    window.__viewingId=id;
+    var paperCards=PAPERS.map(function(p){var sel=(window.__paper===p.id)?'2px solid var(--accent)':'1px solid var(--border)';return '<div onclick="window.__setPaper(\''+p.id+'\')" style="cursor:pointer;border:'+sel+';border-radius:6px;padding:6px 4px;text-align:center;background:var(--card2);"><div style="width:14px;height:20px;border:1.5px solid var(--muted);border-radius:2px;margin:0 auto 3px;"></div><div style="font-size:9px;font-weight:700;">'+p.name+'</div></div>';}).join('');
+    var h='<div class="modal-bg" onclick="if(event.target===this){window.__closeM();document.getElementById(\'printArea\').style.display=\'none\';}"><div class="modal" style="max-width:920px;"><h3 style="margin:0 0 10px;font-size:15px;font-weight:800;">'+i.no+' · '+i.client+'</h3><div style="background:#fff;color:#000;border-radius:10px;padding:20px;font-size:13px;max-height:520px;overflow:auto;" id="invPrev"></div><div style="margin-top:12px;"><div style="font-size:11px;color:var(--muted);margin-bottom:5px;">Paper Size — Portrait (တောင်လိုက် · tap to select)</div><div style="display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:10px;">'+paperCards+'</div><div style="display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;"><button class="btn-ghost" style="font-size:12px;padding:8px 12px;" onclick="window.__exportJPEG()">Save JPEG</button><button class="btn-ghost" onclick="document.getElementById(\'printArea\').style.display=\'none\';window.__closeM()">'+t('close')+'</button><button class="btn-primary" onclick="window.print()">'+t('print')+'</button></div></div></div></div>';
+    document.getElementById('modalRoot').innerHTML=h;document.getElementById('invPrev').innerHTML=pa.innerHTML;
+  };
+
+  function renderBook(){
+    var h='<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:12px;"><h2 style="margin:0;font-size:17px;font-weight:800;">'+t('nav_book')+'</h2><button class="btn-primary" onclick="window.__addBook()">'+t('add_book')+'</button></div>';
+    h+='<div style="display:flex;flex-wrap:wrap;gap:12px;">';
+    if(state.bookings.length===0)h+='<div class="card" style="width:100%;padding:22px;text-align:center;color:var(--muted);">—</div>';
+    state.bookings.slice().reverse().forEach(function(b){var d=Math.ceil((new Date(b.eventDate)-new Date(today()))/86400000);var bal=Number(b.total)-Number(b.deposit);
+      h+='<div class="card" style="flex:1 1 280px;min-width:240px;padding:14px;border-top:3px solid var(--accent);"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;"><div><div style="font-weight:700;font-size:14px;">'+b.couple+'</div><div style="font-size:10px;color:var(--muted);margin-top:2px;">'+b.phone+'</div></div><span class="pill pill-'+b.status+'">'+t(b.status)+'</span></div>'+
+      '<div style="font-size:11px;line-height:1.9;color:var(--muted);"><div>'+t('event_date')+': <span style="color:var(--text);font-weight:600;">'+b.eventDate+'</span> '+(d>=0?'<span style="color:var(--accent);">('+d+' '+t('days_left')+')</span>':'<span style="color:var(--danger);">('+t('done')+')</span>')+'</div>'+(b.weddingDate?'<div>'+t('wedding_date')+': <span style="color:var(--text);font-weight:600;">'+b.weddingDate+'</span></div>':'')+'<div>'+t('location')+': <span style="color:var(--text);">'+b.location+'</span></div><div>'+t('package')+': <span style="color:var(--text);">'+b.package+'</span></div>'+(b.note?'<div>'+t('note')+': '+b.note+'</div>':'')+'</div>'+
+      '<div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border);font-size:11px;"><div style="display:flex;justify-content:space-between;"><span style="color:var(--muted);">'+t('deposit')+'</span><span style="color:var(--accent);font-weight:700;">'+fmt(b.deposit)+'</span></div><div style="display:flex;justify-content:space-between;margin-top:3px;"><span style="color:var(--muted);">'+t('balance')+'</span><span style="color:var(--accent2,#c9a86a);font-weight:700;">'+fmt(bal)+'</span></div></div>'+
+      '<div style="display:flex;gap:6px;margin-top:10px;"><select class="field" style="flex:1;padding:3px 6px;font-size:10px;" onchange="window.__setBook(\''+b.id+'\',this.value)"><option value="booked"'+(b.status==='booked'?' selected':'')+'>'+t('booked')+'</option><option value="confirmed"'+(b.status==='confirmed'?' selected':'')+'>'+t('confirmed')+'</option><option value="completed"'+(b.status==='completed'?' selected':'')+'>'+t('completed')+'</option><option value="cancelled"'+(b.status==='cancelled'?' selected':'')+'>'+t('cancelled')+'</option></select><button class="btn-danger" onclick="window.__delBook(\''+b.id+'\')">'+t('del')+'</button></div></div>';});
+    h+='</div>';document.getElementById('view').innerHTML=h;
+  }
+  window.__setBook=function(id,v){var b=state.bookings.find(function(x){return x.id===id;});if(b){b.status=v;save();render();}};
+  window.__delBook=function(id){if(!confirm(t('delete_confirm')))return;state.bookings=state.bookings.filter(function(x){return x.id!==id;});save();render();};
+  window.__addBook=function(){
+    var h='<div class="modal-bg" onclick="if(event.target===this)window.__closeM()"><div class="modal"><h3 style="margin:0 0 14px;font-size:16px;font-weight:800;">'+t('add_book')+'</h3>'+
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">'+
+    '<div><label style="font-size:11px;color:var(--muted);">'+t('book_couple')+'</label><input class="field" id="b_couple"></div>'+
+    '<div><label style="font-size:11px;color:var(--muted);">'+t('phone')+'</label><input class="field" id="b_phone"></div>'+
+    '<div><label style="font-size:11px;color:var(--muted);">'+t('event_date')+'</label><input class="field" id="b_event" type="date"></div>'+
+    '<div><label style="font-size:11px;color:var(--muted);">'+t('wedding_date')+'</label><input class="field" id="b_wed" type="date"></div>'+
+    '<div><label style="font-size:11px;color:var(--muted);">'+t('location')+'</label><input class="field" id="b_loc"></div>'+
+    '<div><label style="font-size:11px;color:var(--muted);">'+t('package')+' ('+t('pick_or_type')+')</label><input class="field" id="b_pkg" list="pkgList" placeholder="Package A"><datalist id="pkgList"><option>Package A</option><option>Package B</option><option>Package C</option><option>Package D</option><option>Package E</option><option>Package F</option><option>Package G</option></datalist></div>'+
+    '<div><label style="font-size:11px;color:var(--muted);">'+t('total')+'</label><input class="field" id="b_total" type="number" placeholder="'+t('optional')+'"></div>'+
+    '<div><label style="font-size:11px;color:var(--muted);">'+t('deposit')+'</label><input class="field" id="b_dep" type="number" value="100000"></div>'+
+    '<div><label style="font-size:11px;color:var(--muted);">'+t('status')+'</label><select class="field" id="b_status"><option value="booked">'+t('booked')+'</option><option value="confirmed">'+t('confirmed')+'</option><option value="completed">'+t('completed')+'</option></select></div>'+
+    '</div><div style="margin-bottom:12px;"><label style="font-size:11px;color:var(--muted);">'+t('note')+'</label><input class="field" id="b_note"></div>'+
+    '<div style="display:flex;gap:8px;justify-content:flex-end;"><button class="btn-ghost" onclick="window.__closeM()">'+t('close')+'</button><button class="btn-primary" onclick="window.__saveBook()">'+t('save')+'</button></div></div></div>';
+    document.getElementById('modalRoot').innerHTML=h;};
+  window.__saveBook=function(){var c=document.getElementById('b_couple').value.trim();if(!c){alert('Name required');return;}
+    state.bookings.push({id:uid(),couple:c,phone:document.getElementById('b_phone').value,bookDate:today(),eventDate:document.getElementById('b_event').value||today(),location:document.getElementById('b_loc').value||'-',package:document.getElementById('b_pkg').value,weddingDate:document.getElementById('b_wed').value||'',total:Number(document.getElementById('b_total').value)||0,deposit:Number(document.getElementById('b_dep').value)||0,status:document.getElementById('b_status').value,note:document.getElementById('b_note').value});
+    save();window.__closeM();render();};
+
+  var finPeriod='monthly';
+  function renderFin(){
+    var inc=0,exp=0;
+    function match(d){if(finPeriod==='daily')return d===today();if(finPeriod==='monthly')return mk(d)===mk();return yr(d)===yr();}
+    state.invoices.forEach(function(i){if(match(i.date))inc+=Number(i.paid||0);});
+    state.otherIncome.forEach(function(o){if(match(o.date))inc+=Number(o.amount||0);});
+    state.expenses.forEach(function(e){if(match(e.date))exp+=Number(e.amount||0);});
+    var net=inc-exp;
+    var h='<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:12px;"><h2 style="margin:0;font-size:17px;font-weight:800;">'+t('nav_fin')+'</h2><div style="display:flex;gap:4px;background:var(--card2);border-radius:10px;padding:3px;">';
+    ['daily','monthly','yearly'].forEach(function(p){h+='<button class="subtab'+(finPeriod===p?' active':'')+'" onclick="window.__finP(\''+p+'\')">'+t(p)+'</button>';});
+    h+='</div></div>';
+    h+='<div style="display:flex;flex-wrap:wrap;gap:12px;margin-bottom:14px;">';
+    [[t('fin_income'),fmt(inc),'var(--accent)'],[t('month_exp'),fmt(exp),'var(--danger)'],[t('fin_pl'),fmt(net),net>=0?'var(--accent)':'var(--danger)']].forEach(function(c){
+      h+='<div class="card" style="flex:1 1 160px;min-width:140px;padding:16px;"><div style="font-size:11px;color:var(--muted);font-weight:600;margin-bottom:6px;">'+c[0]+'</div><div style="font-size:22px;font-weight:800;color:'+c[2]+';font-variant-numeric:tabular-nums;">'+c[1]+'</div></div>';});
+    h+='</div>';
+    var mOpts=state.settings.payMethods.map(function(m){return '<option>'+m+'</option>';}).join('');
+    var cOpts=INCOME_CATS.map(function(c){return '<option>'+c+'</option>';}).join('');
+    h+='<div class="card" style="padding:14px;margin-bottom:14px;"><h3 style="margin:0 0 10px;font-size:13px;font-weight:700;">'+t('fin_add_other')+'</h3>'+
+    '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;margin-bottom:8px;">'+
+    '<div><label style="font-size:10px;color:var(--muted);">'+t('date')+'</label><input class="field" id="o_date" type="date" value="'+today()+'"></div>'+
+    '<div><label style="font-size:10px;color:var(--muted);">'+t('cat')+'</label><input class="field" id="o_cat" list="incCatList" placeholder="'+t('choose_or_type')+'"></div><datalist id="incCatList">'+cOpts+'</datalist>'+
+    '<div><label style="font-size:10px;color:var(--muted);">'+t('method')+'</label><select class="field" id="o_method">'+mOpts+'</select></div>'+
+    '<div><label style="font-size:10px;color:var(--muted);">'+t('amount')+'</label><input class="field" id="o_amt" type="number" placeholder="0"></div>'+
+    '<div style="grid-column:span 2;"><label style="font-size:10px;color:var(--muted);">'+t('note')+'</label><input class="field" id="o_note"></div>'+
+    '</div><button class="btn-primary" style="width:100%;" onclick="window.__saveOther()">'+t('save')+'</button></div>';
+    var ledger=[];
+    state.invoices.forEach(function(i){if(Number(i.paid||0)>0)ledger.push({date:i.date,source:i.no+' · '+i.client,cat:t('paid_invoice'),method:i.method||'-',note:i.note,amount:Number(i.paid),live:true});});
+    state.otherIncome.forEach(function(o){ledger.push({date:o.date,source:o.note||o.cat,cat:o.cat,method:o.method,note:'',amount:Number(o.amount),id:o.id});});
+    ledger.sort(function(a,b){return a.date<b.date?1:-1;});
+    h+='<div class="card scroll-x" style="padding:6px 12px;"><h3 style="margin:8px 5px;font-size:13px;font-weight:700;">'+t('fin_ledger')+' <span style="font-size:10px;color:var(--muted);font-weight:400;">('+t('ledger_auto')+')</span></h3><table style="width:100%;border-collapse:collapse;font-size:12px;min-width:600px;"><thead><tr style="color:var(--muted);font-size:10px;text-transform:uppercase;"><th style="text-align:left;padding:8px 5px;">'+t('date')+'</th><th style="text-align:left;padding:8px 5px;">'+t('source')+'</th><th style="text-align:left;padding:8px 5px;">'+t('cat')+'</th><th style="text-align:left;padding:8px 5px;">'+t('method')+'</th><th style="text-align:right;padding:8px 5px;">'+t('amount')+'</th><th style="text-align:center;padding:8px 5px;"></th></tr></thead><tbody>';
+    if(ledger.length===0)h+='<tr><td colspan="6" style="padding:20px;text-align:center;color:var(--muted);">—</td></tr>';
+    ledger.forEach(function(l){h+='<tr class="tbl-row"><td style="padding:8px 5px;color:var(--muted);">'+l.date+'</td><td style="padding:8px 5px;">'+l.source+(l.live?' <span class="pill pill-paid" style="font-size:9px;">Live</span>':'')+'</td><td style="padding:8px 5px;font-size:11px;">'+l.cat+'</td><td style="padding:8px 5px;font-size:11px;">'+l.method+'</td><td style="padding:8px 5px;text-align:right;color:var(--accent);font-weight:700;font-variant-numeric:tabular-nums;">+'+fmt(l.amount)+'</td><td style="padding:8px 5px;text-align:center;">'+(l.id?'<button class="btn-danger" onclick="window.__delOther(\''+l.id+'\')">'+t('del')+'</button>':'')+'</td></tr>';});
+    h+='</tbody></table></div>';
+    h+='<div style="margin-top:14px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;"><h3 style="margin:0;font-size:14px;font-weight:700;">'+t('month_exp')+'</h3><button class="btn-ghost" onclick="window.__addExp()">'+t('add_exp')+'</button></div>';
+    h+='<div class="card scroll-x" style="padding:6px 12px;margin-top:8px;"><table style="width:100%;border-collapse:collapse;font-size:12px;min-width:500px;"><thead><tr style="color:var(--muted);font-size:10px;text-transform:uppercase;"><th style="text-align:left;padding:8px 5px;">'+t('date')+'</th><th style="text-align:left;padding:8px 5px;">'+t('cat')+'</th><th style="text-align:left;padding:8px 5px;">'+t('desc')+'</th><th style="text-align:right;padding:8px 5px;">'+t('amount')+'</th><th style="text-align:center;padding:8px 5px;"></th></tr></thead><tbody>';
+    state.expenses.slice().sort(function(a,b){return a.date<b.date?1:-1;}).slice(0,10).forEach(function(e){h+='<tr class="tbl-row"><td style="padding:8px 5px;color:var(--muted);">'+e.date+'</td><td style="padding:8px 5px;font-size:11px;">'+e.cat+'</td><td style="padding:8px 5px;">'+e.desc+'</td><td style="padding:8px 5px;text-align:right;color:var(--danger);font-weight:700;font-variant-numeric:tabular-nums;">-'+fmt(e.amount)+'</td><td style="padding:8px 5px;text-align:center;"><button class="btn-danger" onclick="window.__delExp(\''+e.id+'\')">'+t('del')+'</button></td></tr>';});
+    h+='</tbody></table></div>';
+    document.getElementById('view').innerHTML=h;
+  }
+  window.__finP=function(p){finPeriod=p;render();};
+  window.__saveOther=function(){var a=Number(document.getElementById('o_amt').value)||0;if(a<=0){alert(t('amount_required'));return;}
+    state.otherIncome.push({id:uid(),date:document.getElementById('o_date').value,cat:document.getElementById('o_cat').value,method:document.getElementById('o_method').value,amount:a,note:document.getElementById('o_note').value});
+    save();render();};
+  window.__delOther=function(id){state.otherIncome=state.otherIncome.filter(function(x){return x.id!==id;});save();render();};
+  window.__delExp=function(id){if(!confirm(t('delete_confirm')))return;state.expenses=state.expenses.filter(function(x){return x.id!==id;});save();render();};
+  window.__addExp=function(){
+    var opts=EXP_CATS.map(function(c){return '<option>'+c+'</option>';}).join('');
+    var h='<div class="modal-bg" onclick="if(event.target===this)window.__closeM()"><div class="modal" style="max-width:440px;"><h3 style="margin:0 0 12px;font-size:16px;font-weight:800;">'+t('add_exp')+'</h3>'+
+    '<div style="margin-bottom:8px;"><label style="font-size:11px;color:var(--muted);">'+t('cat')+'</label><input class="field" id="e_cat" list="expCatList" placeholder="'+t('choose_or_type')+'"></div><datalist id="expCatList">'+opts+'</datalist>'+
+    '<div style="margin-bottom:8px;"><label style="font-size:11px;color:var(--muted);">'+t('desc')+'</label><input class="field" id="e_desc"></div>'+
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;"><div><label style="font-size:11px;color:var(--muted);">'+t('amount')+'</label><input class="field" id="e_amt" type="number"></div><div><label style="font-size:11px;color:var(--muted);">'+t('date')+'</label><input class="field" id="e_date" type="date" value="'+today()+'"></div></div>'+
+    '<div style="display:flex;gap:8px;justify-content:flex-end;"><button class="btn-ghost" onclick="window.__closeM()">'+t('close')+'</button><button class="btn-primary" onclick="window.__saveExp()">'+t('save')+'</button></div></div></div>';
+    document.getElementById('modalRoot').innerHTML=h;};
+  window.__saveExp=function(){var a=Number(document.getElementById('e_amt').value)||0;if(a<=0){alert(t('amount_required'));return;}
+    state.expenses.push({id:uid(),cat:document.getElementById('e_cat').value,desc:document.getElementById('e_desc').value||'-',amount:a,date:document.getElementById('e_date').value});
+    save();window.__closeM();render();};
+
+  function renderNotes(){
+    var h='<h2 style="margin:0 0 12px;font-size:17px;font-weight:800;">'+t('nav_note')+'</h2>';
+    h+='<div class="card" style="padding:12px;margin-bottom:14px;"><div style="display:flex;gap:8px;flex-wrap:wrap;"><input class="field" id="n_text" placeholder="..." style="flex:1 1 200px;min-width:180px;"><button class="btn-primary" onclick="window.__addNote()">'+t('add_note')+'</button></div></div>';
+    h+='<div style="display:flex;flex-wrap:wrap;gap:10px;">';
+    if(state.notes.length===0)h+='<div style="color:var(--muted);font-size:12px;padding:16px;">—</div>';
+    state.notes.slice().reverse().forEach(function(n){h+='<div class="note-card" style="flex:1 1 200px;min-width:180px;background:'+n.color+';border:1px solid var(--border);"><div style="font-size:13px;line-height:1.6;white-space:pre-wrap;word-break:break-word;padding-right:22px;">'+n.text+'</div><div style="position:absolute;bottom:8px;left:12px;font-size:10px;color:var(--muted);">'+n.time+'</div><button class="btn-danger" style="position:absolute;top:6px;right:6px;padding:1px 6px;" onclick="window.__delNote(\''+n.id+'\')">✕</button></div>';});
+    h+='</div>';document.getElementById('view').innerHTML=h;
+  }
+  window.__addNote=function(){var x=document.getElementById('n_text').value.trim();if(!x)return;
+    state.notes.push({id:uid(),text:x,color:NOTE_COLORS[state.notes.length%NOTE_COLORS.length],time:today()});save();render();};
+  window.__delNote=function(id){state.notes=state.notes.filter(function(x){return x.id!==id;});save();render();};
+
+  var setTab='business';
+  function renderSet(){
+    var h='<h2 style="margin:0 0 12px;font-size:17px;font-weight:800;">'+t('nav_set')+'</h2>';
+    h+='<div style="display:flex;gap:4px;background:var(--card2);border-radius:10px;padding:3px;margin-bottom:14px;flex-wrap:wrap;">';
+    ['business','invoice','system'].forEach(function(p){h+='<button class="subtab'+(setTab===p?' active':'')+'" onclick="window.__setT(\''+p+'\')">'+t(p==='invoice'?'set_inv':'set_'+p)+'</button>';});
+    h+='</div>';
+    if(setTab==='business'){
+      h+='<div class="card" style="padding:16px;"><h3 style="margin:0 0 12px;font-size:14px;font-weight:700;">'+t('set_business')+'</h3>'+
+      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;">'+
+      '<div><label style="font-size:11px;color:var(--muted);">'+t('biz_name')+'</label><input class="field" id="s_name" value="'+state.business.name+'"></div>'+
+      '<div><label style="font-size:11px;color:var(--muted);">'+t('biz_latin')+'</label><input class="field" id="s_latin" value="'+state.business.latin+'"></div>'+
+      '<div><label style="font-size:11px;color:var(--muted);">'+t('phone')+'</label><input class="field" id="s_phone" value="'+state.business.phone+'"></div>'+
+      '<div><label style="font-size:11px;color:var(--muted);">'+t('email')+'</label><input class="field" id="s_email" value="'+state.business.email+'"></div>'+
+      '<div><label style="font-size:11px;color:var(--muted);">'+t('address')+' 1</label><input class="field" id="s_a1" value="'+state.business.addr1+'"></div>'+
+      '<div><label style="font-size:11px;color:var(--muted);">'+t('address')+' 2</label><input class="field" id="s_a2" value="'+state.business.addr2+'"></div>'+
+      '<div><label style="font-size:11px;color:var(--muted);">'+t('taxid')+'</label><input class="field" id="s_tax" value="'+state.business.taxId+'"></div>'+
+      '</div><button class="btn-primary" onclick="window.__saveBiz()">'+t('save')+'</button></div>';
+      h+='<div class="card" style="padding:16px;margin-top:12px;"><h3 style="margin:0 0 10px;font-size:14px;font-weight:700;">Logo & Header Banner</h3>'+
+      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">'+
+      '<div style="border:1px dashed var(--border);border-radius:10px;padding:12px;text-align:center;"><div style="font-size:11px;color:var(--muted);margin-bottom:6px;">Business Logo (PNG/JPG) · 200×200px သင့်တော်</div>'+(state.settings.logo?'<img src="'+state.settings.logo+'" style="height:50px;border-radius:6px;background:#fff;padding:3px;margin-bottom:6px;">':'')+'<label class="btn-ghost" style="cursor:pointer;font-size:12px;">Upload Logo<input type="file" accept="image/*" style="display:none;" onchange="window.__uploadLogo(this)"></label>'+(state.settings.logo?' <button class="btn-danger" onclick="window.__removeLogo()">Remove</button>':'')+'</div>'+
+      '<div style="border:1px dashed var(--border);border-radius:10px;padding:12px;text-align:center;"><div style="font-size:11px;color:var(--muted);margin-bottom:6px;">Invoice Header Banner · 2480×630px သင့်တော်</div>'+(state.settings.banner?'<img src="'+state.settings.banner+'" style="height:50px;border-radius:6px;margin-bottom:6px;max-width:100%;">':'')+'<label class="btn-ghost" style="cursor:pointer;font-size:12px;">Upload Banner<input type="file" accept="image/*" style="display:none;" onchange="window.__uploadBanner(this)"></label>'+(state.settings.banner?' <button class="btn-danger" onclick="window.__removeBanner()">Remove</button>':'')+'</div>'+
+      '</div></div>';
+      h+='<div class="card" style="padding:16px;margin-top:12px;"><h3 style="margin:0 0 10px;font-size:14px;font-weight:700;">Social Media & Contact (Invoice Footer)</h3>'+
+      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">'+
+      '<div><label style="font-size:11px;color:var(--muted);">WeChat</label><input class="field" id="s_wechat" value="'+(state.settings.social.wechat||'')+'" placeholder="WeChat ID"></div>'+
+      '<div><label style="font-size:11px;color:var(--muted);">Telegram</label><input class="field" id="s_telegram" value="'+(state.settings.social.telegram||'')+'" placeholder="@username"></div>'+
+      '<div><label style="font-size:11px;color:var(--muted);">Facebook</label><input class="field" id="s_facebook" value="'+(state.settings.social.facebook||'')+'" placeholder="fb.com/..."></div>'+
+      '<div><label style="font-size:11px;color:var(--muted);">TikTok</label><input class="field" id="s_tiktok" value="'+(state.settings.social.tiktok||'')+'" placeholder="@tiktok"></div>'+
+      '<div style="grid-column:span 2;"><label style="font-size:11px;color:var(--muted);">Website</label><input class="field" id="s_website" value="'+(state.settings.social.website||'')+'" placeholder="https://..."></div>'+
+      '<div style="grid-column:span 2;"><label style="font-size:11px;color:var(--muted);">WeChat QR Code (ဖုန်းထဲကရွေး — tap card to upload)</label><div onclick="document.getElementById(\'wxQRfile\').click()" style="cursor:pointer;border:1px dashed var(--border);border-radius:10px;padding:14px;text-align:center;background:var(--card2);">'+(state.settings.social.wechatQR?'<img src="'+state.settings.social.wechatQR+'" style="height:70px;border-radius:6px;background:#fff;padding:3px;">':'<div style="color:var(--muted);font-size:12px;">[ Tap to upload WeChat QR image from phone ]</div>')+'</div><input type="file" id="wxQRfile" accept="image/*" style="display:none;" onchange="window.__uploadWxQR(this)"></div>'+
+      '</div><button class="btn-primary" style="margin-top:10px;" onclick="window.__saveSocial()">'+t('save')+'</button></div>';
+    } else if(setTab==='invoice'){
+      h+='<div class="card" style="padding:16px;margin-bottom:12px;"><h3 style="margin:0 0 10px;font-size:14px;font-weight:700;">'+t('pay_methods')+'</h3><div id="pmBox">';
+      state.settings.payMethods.forEach(function(m,idx){h+='<span class="chip">'+m+' <button onclick="window.__delPM('+idx+')">✕</button></span>';});
+      h+='</div><div style="display:flex;gap:8px;margin-top:8px;"><input class="field" id="pmNew" placeholder="e.g. AYA Pay" style="flex:1;"><button class="btn-ghost" onclick="window.__addPM()">Add</button></div></div>';
+      h+='<div class="card" style="padding:16px;margin-bottom:12px;"><h3 style="margin:0 0 10px;font-size:14px;font-weight:700;">Tax & Terms</h3><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">'+
+      '<div><label style="font-size:11px;color:var(--muted);">'+t('tax_rate')+'</label><input class="field" id="s_taxr" type="number" value="'+state.settings.taxRate+'"></div>'+
+      '<div><label style="font-size:11px;color:var(--muted);">'+t('inv_prefix')+'</label><input class="field" id="s_pre" value="'+state.settings.invPrefix+'"></div>'+
+      '<div><label style="font-size:11px;color:var(--muted);">'+t('due_days')+'</label><input class="field" id="s_due" type="number" value="'+state.settings.dueDays+'"></div>'+
+      '</div><div style="margin-top:10px;"><label style="font-size:11px;color:var(--muted);">'+t('thankyou')+'</label><input class="field" id="s_ty" value="'+state.settings.thankyou+'"></div>'+
+      '<div style="margin-top:10px;"><label style="font-size:11px;color:var(--muted);">Invoice Design — 10 Templates (tap to select)</label><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:8px;margin-top:6px;">'+
+      TEMPLATES.map(function(tp){var sel=(state.settings.invTemplate===tp.id)?'2px solid var(--accent)':'1px solid var(--border)';var hdrBg=(tp.hdr==='solid')?tp.accent:(tp.hdr==='double'||tp.hdr==='border')?tp.accent:'#e5e7eb';return '<div onclick="window.__setTpl(\''+tp.id+'\')" style="cursor:pointer;border:'+sel+';border-radius:8px;overflow:hidden;background:var(--card2);"><div style="height:16px;background:'+hdrBg+';"></div><div style="padding:6px 8px;"><div style="height:4px;background:var(--border);border-radius:2px;margin-bottom:3px;"></div><div style="height:4px;background:var(--border);border-radius:2px;width:70%;margin-bottom:3px;"></div><div style="height:4px;background:var(--border);border-radius:2px;width:50%;"></div><div style="font-size:9px;font-weight:700;margin-top:5px;color:var(--text);">'+tp.name+'</div></div></div>';}).join('')+
+      '</div></div>'+
+      '<div style="margin-top:10px;"><label style="font-size:11px;color:var(--muted);">Accent Color (optional — စာရွက်မှာ တန်မြင်ရမည်)</label><input type="color" class="field" id="s_col" value="'+(state.settings.invColor||'#1f2937')+'" style="height:38px;padding:3px;"></div>'+
+      '<button class="btn-primary" style="margin-top:10px;" onclick="window.__saveInvSet()">'+t('save')+'</button></div>';
+      h+='<div class="card" style="padding:16px;margin-bottom:12px;"><h3 style="margin:0 0 10px;font-size:14px;font-weight:700;">Invoice Display</h3>';
+      [['showPaid',t('show_paid')],['showTax',t('show_tax')],['showBal',t('show_bal')],['showSig',t('show_sig')]].forEach(function(x){
+        h+='<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);"><span style="font-size:12px;">'+x[1]+'</span><div class="toggle'+(state.settings[x[0]]?' on':'')+'" onclick="window.__toggle(\''+x[0]+'\')"></div></div>';});
+      h+='</div>';
+      h+='<div class="card" style="padding:16px;"><h3 style="margin:0 0 10px;font-size:14px;font-weight:700;">'+t('signature')+'</h3>'+
+      '<canvas id="sigCanvas" class="sig-canvas" width="500" height="140" style="width:100%;max-width:500px;"></canvas>'+
+      '<div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;"><label class="btn-ghost" style="cursor:pointer;font-size:12px;">Upload Signature<input type="file" accept="image/*" style="display:none;" onchange="window.__uploadSig(this)"></label><button class="btn-ghost" onclick="window.__clearSig()">Clear</button><button class="btn-primary" onclick="window.__saveSig()">'+t('save')+'</button>'+(state.settings.signature?' <button class="btn-danger" onclick="window.__delSig()">Remove</button>':'')+'</div>'+
+      (state.settings.signature?'<div style="margin-top:10px;"><img src="'+state.settings.signature+'" style="height:50px;background:#fff;border-radius:6px;padding:4px;"></div>':'')+'</div>';
+    } else {
+      h+='<div class="card" style="padding:16px;margin-bottom:12px;"><h3 style="margin:0 0 10px;font-size:14px;font-weight:700;">'+t('theme')+'</h3><div style="display:flex;flex-wrap:wrap;gap:8px;">';
+      var thNames={forest:'Forest Green',dark:'Studio Dark',ivory:'Ivory Light',mustard:'Mustard Warm'};
+      var thCols={forest:'linear-gradient(135deg,#1b2a1f,#5cb85c)',dark:'linear-gradient(135deg,#141824,#5b8def)',ivory:'linear-gradient(135deg,#f7f5f0,#b8860b)',mustard:'linear-gradient(135deg,#2a2418,#d4a017)'};
+      Object.keys(thNames).forEach(function(k){h+='<div onclick="window.__setTheme(\''+k+'\')" style="flex:1 1 120px;min-width:110px;cursor:pointer;border-radius:10px;padding:14px;border:2px solid '+(state.settings.theme===k?'var(--accent)':'var(--border)')+';background:'+thCols[k]+';"><div style="color:#fff;font-size:12px;font-weight:700;text-shadow:0 1px 3px rgba(0,0,0,.5);">'+thNames[k]+'</div></div>';});
+      h+='</div></div>';
+      h+='<div class="card" style="padding:16px;margin-bottom:12px;"><h3 style="margin:0 0 10px;font-size:14px;font-weight:700;">'+t('backup')+'</h3><div style="display:flex;gap:8px;flex-wrap:wrap;"><button class="btn-primary" onclick="window.__exportJSON()">'+t('export_json')+'</button><label class="btn-ghost" style="cursor:pointer;">'+t('import_json')+'<input type="file" accept=".json,application/json" style="display:none;" onchange="window.__importJSON(this)"></label><button class="btn-danger" onclick="window.__clearAll()">'+t('clear')+'</button></div></div>';
+    }
+    document.getElementById('view').innerHTML=h;
+    if(setTab==='invoice'){var stp=document.getElementById('s_tpl');if(stp)stp.value=state.settings.invTemplate||'classic';initSig();}
+  }
+  window.__setT=function(t){setTab=t;render();};
+  window.__saveBiz=function(){state.business.name=document.getElementById('s_name').value;state.business.latin=document.getElementById('s_latin').value;state.business.phone=document.getElementById('s_phone').value;state.business.email=document.getElementById('s_email').value;state.business.addr1=document.getElementById('s_a1').value;state.business.addr2=document.getElementById('s_a2').value;state.business.taxId=document.getElementById('s_tax').value;save();applyI18nUI();alert('Saved');};
+  function __readImg(inp,cb){var f=inp.files[0];if(!f)return;var r=new FileReader();r.onload=function(e){var img=new Image();img.onload=function(){var canvas=document.createElement('canvas');var maxW=600;var w=Math.min(img.width,maxW);var h=img.height*(w/img.width);canvas.width=w;canvas.height=h;canvas.getContext('2d').drawImage(img,0,0,w,h);cb(canvas.toDataURL('image/jpeg',0.85));};img.src=e.target.result;};r.readAsDataURL(f);}
+  window.__uploadLogo=function(inp){__readImg(inp,function(d){state.settings.logo=d;save();applyI18nUI();render();});};
+  window.__removeLogo=function(){state.settings.logo='';save();applyI18nUI();render();};
+  window.__uploadBanner=function(inp){__readImg(inp,function(d){state.settings.banner=d;save();render();});};
+  window.__removeBanner=function(){state.settings.banner='';save();render();};
+  window.__saveSocial=function(){state.settings.social={wechat:document.getElementById('s_wechat').value,telegram:document.getElementById('s_telegram').value,facebook:document.getElementById('s_facebook').value,tiktok:document.getElementById('s_tiktok').value,website:document.getElementById('s_website').value,wechatQR:state.settings.social.wechatQR||''};save();alert('Saved');};
+  window.__uploadWxQR=function(inp){var f=inp.files[0];if(!f)return;var r=new FileReader();r.onload=function(e){var img=new Image();img.onload=function(){var canvas=document.createElement('canvas');var s=200;canvas.width=s;canvas.height=s;var ctx=canvas.getContext('2d');var sc=Math.max(s/img.width,s/img.height);ctx.drawImage(img,(s-img.width*sc)/2,(s-img.height*sc)/2,img.width*sc,img.height*sc);state.settings.social.wechatQR=canvas.toDataURL('image/png');save();render();};img.src=e.target.result;};r.readAsDataURL(f);};
+  window.__addPM=function(){var v=document.getElementById('pmNew').value.trim();if(v){state.settings.payMethods.push(v);save();render();}};
+  window.__delPM=function(i){state.settings.payMethods.splice(i,1);save();render();};
+  window.__saveInvSet=function(){state.settings.taxRate=Number(document.getElementById('s_taxr').value)||0;state.settings.invPrefix=document.getElementById('s_pre').value;state.settings.dueDays=Number(document.getElementById('s_due').value)||7;state.settings.thankyou=document.getElementById('s_ty').value;state.settings.invColor=document.getElementById('s_col').value;save();alert('Saved');};
+  window.__setTpl=function(id){state.settings.invTemplate=id;save();render();};
+  window.__goSet=function(){current='settings';setTab='business';document.querySelectorAll('.nav-btn').forEach(function(x){x.classList.toggle('active',x.dataset.view==='settings');});render();};
+  window.__toggle=function(k){state.settings[k]=!state.settings[k];save();render();};
+  window.__setTheme=function(k){state.settings.theme=k;save();applyTheme();render();};
+  window.__exportJSON=function(){var blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'});var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='studio_backup_'+today()+'.json';a.click();};
+  window.__importJSON=function(inp){var f=inp.files[0];if(!f)return;var r=new FileReader();r.onload=function(e){try{var d=JSON.parse(e.target.result);state=Object.assign(state,d);save();applyTheme();applyI18nUI();document.getElementById('langSel').value=state.settings.lang;document.getElementById('curSel').value=state.settings.currency;render();alert('Imported');}catch(err){alert('Invalid file');}};r.readAsText(f);};
+  window.__clearAll=function(){if(!confirm('Delete ALL data? Cannot undo.'))return;localStorage.removeItem(KEY);location.reload();};
+
+  var sigCtx=null,sigDrawing=false,sigHasInk=false;
+  function initSig(){
+    var cv=document.getElementById('sigCanvas');if(!cv)return;
+    sigCtx=cv.getContext('2d');sigCtx.fillStyle='#fff';sigCtx.fillRect(0,0,cv.width,cv.height);
+    sigCtx.strokeStyle='#000';sigCtx.lineWidth=2.5;sigCtx.lineCap='round';sigHasInk=false;
+    function pos(e){var r=cv.getBoundingClientRect();var x=(e.touches?e.touches[0].clientX:e.clientX)-r.left;var y=(e.touches?e.touches[0].clientY:e.clientY)-r.top;return{x:x*cv.width/r.width,y:y*cv.height/r.height};}
+    function start(e){e.preventDefault();sigDrawing=true;sigHasInk=true;var p=pos(e);sigCtx.beginPath();sigCtx.moveTo(p.x,p.y);}
+    function move(e){if(!sigDrawing)return;e.preventDefault();var p=pos(e);sigCtx.lineTo(p.x,p.y);sigCtx.stroke();}
+    function end(){sigDrawing=false;}
+    cv.addEventListener('mousedown',start);cv.addEventListener('mousemove',move);window.addEventListener('mouseup',end);
+    cv.addEventListener('touchstart',start);cv.addEventListener('touchmove',move);cv.addEventListener('touchend',end);
+  }
+  window.__clearSig=function(){if(sigCtx){sigCtx.fillStyle='#fff';sigCtx.fillRect(0,0,500,140);}sigHasInk=false;};
+  window.__saveSig=function(){if(!sigHasInk){alert('Draw signature first');return;}var cv=document.getElementById('sigCanvas');state.settings.signature=cv.toDataURL('image/png');save();alert('Saved');render();};
+  window.__delSig=function(){state.settings.signature='';save();render();};
+  window.__uploadSig=function(inp){var f=inp.files[0];if(!f)return;var r=new FileReader();r.onload=function(e){var img=new Image();img.onload=function(){var canvas=document.createElement('canvas');var maxH=140;var h=Math.min(img.height,maxH);var w=img.width*(h/img.height);canvas.width=w;canvas.height=h;canvas.getContext('2d').drawImage(img,0,0,w,h);state.settings.signature=canvas.toDataURL('image/png');save();alert('Signature saved');render();};img.src=e.target.result;};r.readAsDataURL(f);};
+
+  I18N.zh={"nav_dash":"仪表盘","nav_inv":"账单","nav_book":"婚前拍摄预约","nav_fin":"财务","nav_note":"备注","nav_set":"设置","month_income":"本月收入","month_exp":"本月支出","net":"净利润","pending":"待收款","chart6":"近6个月收入与支出","upcoming":"即将到来的预约","recent":"最近账单","add_inv":"+ 新建账单","no":"编号","client":"客户","date":"日期","total":"合计","balance":"未付余额","status":"状态","action":"操作","view":"查看","del":"删除","paid":"已付款","partial":"部分付款","unpaid":"未付款","add_book":"+ 新建预约","add_exp":"+ 添加支出","add_note":"+ 添加备注","save":"保存","close":"关闭","phone":"电话","note":"备注","discount":"折扣","paid_amt":"已付款金额","fin_income":"收入","fin_pl":"损益","fin_add_other":"+ 添加其他收入","fin_ledger":"收入台账","fin_period":"期间","daily":"每日","monthly":"每月","yearly":"每年","set_business":"商业信息","set_inv":"账单元素","set_system":"系统","biz_name":"商家名称","biz_latin":"拉丁文名称 / 副标题","email":"邮箱","address":"地址","taxid":"Tax ID","pay_methods":"付款方式","tax_rate":"税率（%）","inv_prefix":"账单前缀","due_days":"付款期限（天）","signature":"签名（手写）","theme":"主题","currency":"货币","language":"语言","backup":"备份与导出","export_json":"导出数据（JSON）","import_json":"导入数据","clear":"清除全部数据","thankyou":"致谢语","show_paid":"显示 PAID 印章","show_tax":"应用税费行","show_bal":"显示应付余额","show_sig":"显示签名栏","book_couple":"新人","event_date":"拍摄日期","location":"地点","package":"套餐","deposit":"定金","booked":"定金已付","confirmed":"已确认","completed":"已完成","cancelled":"已取消","days_left":"剩余天数","cat":"类别","desc":"描述","amount":"金额","method":"方式","source":"来源","print":"打印 / PDF","add_item":"+ 添加服务","due":"到期日","edit":"编辑","delete_confirm":"删除？","banner_hint":"账单页眉横幅 + Logo 卡片——如需显示，请打开设置 → 商业信息并上传横幅或 Logo。","client_info":"客户地址 / 信息","address_hint":"地址 / Facebook / 详细信息...","service_hint":"服务名称（选择或输入）","service":"服务","qty":"数量","price":"价格","subtotal":"小计","tax":"税费","balance_due":"应付余额","signature_title":"授权签名","wedding_date":"婚礼日期","done":"完成","pick_or_type":"选择或输入","optional":"可选","ledger_auto":"已付款账单会自动同步","paid_invoice":"已付款账单","edit_saved":"已保存","service_required":"请添加服务和价格","client_required":"必须填写客户姓名","amount_required":"必须填写金额","choose_or_type":"选择或输入"};
+  Object.assign(I18N.en,{"nav_clients":"Clients","nav_services":"Services","nav_reports":"Reports","export_csv":"Export CSV","invoice_count":"Invoices","collected":"Collected","outstanding_total":"Outstanding","invoiced_total":"Invoiced total","search_invoices":"Search invoice number, client or phone...","filter_all":"All","overdue":"Overdue","no_results":"No matching records","duplicate":"Duplicate","add_client":"+ Add client","clients_from_invoice":"Customers from existing invoices appear automatically. New entries do not change past invoices.","search_clients":"Search clients...","new_invoice":"New invoice","required_name":"Name is required","add_service":"+ Add service","edit_service":"Edit service","service_hint_note":"Choose a saved service when creating an invoice. Editing catalog prices does not change past invoices. Sales metrics use invoice line items before discounts and tax, including unpaid invoices.","search_services":"Search services...","invalid_price":"Enter a valid non-negative price","confirm_service_delete":"Remove this service from the catalog? Existing invoices will not change.","report_note":"Amounts follow the existing ledger: invoice payments are grouped by invoice date, not actual payment date. Booking deposits are not counted separately.","other_income":"Other income","display_preferences":"Display preferences","date_format":"Date display format","date_format_note":"Changes dates in the invoice list and reports only; stored dates and JSON backups remain unchanged.","report_expenses":"Expenses","choose_section":"Go to","catalog_count":"Saved services","units_sold":"Units invoiced","invoiced_value":"Line-item value"});
+  Object.assign(I18N.my,{"nav_clients":"ဖောက်သည်များ","nav_services":"ဝန်ဆောင်မှုများ","nav_reports":"အစီရင်ခံစာ","export_csv":"CSV ထုတ်ရန်","invoice_count":"ငွေတောင်းချက်အရေအတွက်","collected":"လက်ခံရငွေ","outstanding_total":"မရသေးသောငွေ","invoiced_total":"တောင်းခံငွေစုစုပေါင်း","search_invoices":"နံပါတ်၊ ဖောက်သည်၊ ဖုန်းဖြင့် ရှာရန်...","filter_all":"အားလုံး","overdue":"ရက်လွန်","no_results":"ကိုက်ညီသောစာရင်းမရှိ","duplicate":"မိတ္တူပွား","add_client":"+ ဖောက်သည်ထည့်ရန်","clients_from_invoice":"ရှိပြီးသား ငွေတောင်းချက်များမှ ဖောက်သည်များ အလိုအလျောက် ပေါ်လာသည်။ ဖောက်သည်အသစ်ထည့်ခြင်းက အဟောင်းများကို မပြောင်းပါ။","search_clients":"ဖောက်သည်ရှာရန်...","new_invoice":"ငွေတောင်းချက်အသစ်","required_name":"အမည်ဖြည့်ရန်လိုသည်","add_service":"+ ဝန်ဆောင်မှုထည့်ရန်","edit_service":"ဝန်ဆောင်မှု ပြင်ဆင်","service_hint_note":"ငွေတောင်းချက်လုပ်ရာတွင် စာရင်းသွင်းထားသောဝန်ဆောင်မှုကို ရွေးနိုင်သည်။ ဈေးနှုန်းပြင်ခြင်းက အဟောင်းများကို မပြောင်းပါ။ အရေအတွက်နှင့်တန်ဖိုးသည် မပေးရသေးသောစာရင်းများပါဝင်ပြီး လျှော့ဈေးနှင့်အခွန်မနုတ်မပေါင်းမီတွက်ထားခြင်းဖြစ်သည်။","search_services":"ဝန်ဆောင်မှုရှာရန်...","invalid_price":"သုညနှင့်အထက် မှန်ကန်သောဈေးနှုန်း ဖြည့်ပါ","confirm_service_delete":"ဤဝန်ဆောင်မှုကို စာရင်းမှ ဖယ်မလား? အဟောင်းငွေတောင်းချက်များ မပြောင်းပါ။","report_note":"လက်ရှိစာရင်းနည်းအတိုင်း ပေးသွင်းငွေကို ငွေတောင်းချက်ရက်စွဲအလိုက် ဖော်ပြသည်၊ တကယ့်ငွေလက်ခံရက်အလိုက် မဟုတ်ပါ။ Booking စရံကို သီးခြားထပ်မတွက်ပါ။","other_income":"အခြားဝင်ငွေ","display_preferences":"ပြသမှုဆက်တင်","date_format":"ရက်စွဲပြပုံ","date_format_note":"ငွေတောင်းချက်စာရင်းနှင့် အစီရင်ခံစာတွင် ပြသသောရက်စွဲပုံစံသာ ပြောင်းသည်။ သိမ်းထားသောရက်စွဲနှင့် JSON backup မပြောင်းပါ။","report_expenses":"အသုံးစရိတ်","choose_section":"စာမျက်နှာရွေးရန်","catalog_count":"သိမ်းထားသောဝန်ဆောင်မှု","units_sold":"တောင်းခံထားသောအရေအတွက်","invoiced_value":"ဝန်ဆောင်မှုတန်ဖိုး"});
+  Object.assign(I18N.shan,{"nav_clients":"ၵူၼ်းသိုဝ်ႉ","nav_services":"ၵၢၼ်ပၼ်ႁႅင်း","nav_reports":"ႁၢႆးငၢၼ်း","export_csv":"ဢွၵ်ႇ CSV","invoice_count":"ႁူဝ်ၼပ်ႉ Invoice","collected":"ငိုၼ်းလႆႈႁပ်ႉ","outstanding_total":"ငိုၼ်းတိုၵ်ႉၵိုတ်း","invoiced_total":"ႁူမ်ႈငိုၼ်း Invoice","search_invoices":"ၶူၼ်ႉႁႃ မၢႆ Invoice / ၵူၼ်းသိုဝ်ႉ / ၾူၼ်း...","filter_all":"တင်းမူတ်း","overdue":"ပူၼ်ႉဝၼ်းပၼ်ငိုၼ်း","no_results":"ဢမ်ႇႁၼ်သဵၼ်ႈမၢႆ","duplicate":"ၵၢႆႇၽိုၼ်","add_client":"+ ထႅမ်ၵူၼ်းသိုဝ်ႉ","clients_from_invoice":"ၵူၼ်းသိုဝ်ႉၼႂ်း Invoice ၵဝ်ႇ တေၼႄႁင်းၵူၺ်း။ ထႅမ်ၵူၼ်းသိုဝ်ႉမႂ်ႇ ဢမ်ႇလႅၵ်ႈ Invoice ၵဝ်ႇ။","search_clients":"ၶူၼ်ႉႁႃၵူၼ်းသိုဝ်ႉ...","new_invoice":"Invoice မႂ်ႇ","required_name":"လူဝ်ႇတႅမ်ႈၸိုဝ်ႈ","add_service":"+ ထႅမ်ၵၢၼ်ပၼ်ႁႅင်း","edit_service":"မႄးၵၢၼ်ပၼ်ႁႅင်း","service_hint_note":"လိူၵ်ႈၵၢၼ်ပၼ်ႁႅင်းၼႂ်း Invoice မႂ်ႇလႆႈ။ မႄးၵႃႈၶၼ်တီႈၼႆႈ ဢမ်ႇလႅၵ်ႈ Invoice ၵဝ်ႇ။ ႁူဝ်ၼပ်ႉ လႄႈ ၵႃႈၶၼ်ၼပ်ႉၸွမ်းၶေႃႈၼႂ်း Invoice ပႃးတင်းဢၼ်ပႆႇပၼ်ငိုၼ်း၊ ပႆႇႁၵ်းၵႃႈယွမ်းၶၼ် လႄႈ ၶွၼ်ႇ။","search_services":"ၶူၼ်ႉႁႃၵၢၼ်ပၼ်ႁႅင်း...","invalid_price":"တႅမ်ႈၵႃႈၶၼ်ဢၼ်ဢမ်ႇတႅမ်ႇလိူဝ် 0","confirm_service_delete":"တေဢဝ်ၵၢၼ်ပၼ်ႁႅင်းၼႆႉဢွၵ်ႇၼႂ်းသဵၼ်ႈမၢႆႁႃႉ? Invoice ၵဝ်ႇ ဢမ်ႇလႅၵ်ႈ။","report_note":"ငိုၼ်းဢၼ်ပၼ်တီႈ Invoice ၼပ်ႉၸွမ်းဝၼ်း Invoice ဢမ်ႇၸႂ်ႈဝၼ်းႁပ်ႉငိုၼ်း။ ငိုၼ်းၵႅဝ်ႊ Booking ဢမ်ႇၼပ်ႉသွင်ၵမ်း။","other_income":"ငိုၼ်းၶဝ်ႈတၢင်ႇမဵဝ်း","display_preferences":"ၵၢၼ်တင်ႈႁၢင်ႈၽၢင်","date_format":"လၢႆးၼႄမၢႆဝၼ်းထီႈ","date_format_note":"လႅၵ်ႈလၢႆးၼႄမၢႆဝၼ်းတီႈသဵၼ်ႈမၢႆ Invoice လႄႈ ႁၢႆးငၢၼ်းၵူၺ်း။ ၶေႃႈမုၼ်းၼႂ်း JSON ဢမ်ႇလႅၵ်ႈ။","report_expenses":"ငိုၼ်းၸႂ်ႉၸၢႆႇ","choose_section":"လိူၵ်ႈၼႃႈလိၵ်ႈ","catalog_count":"ၵၢၼ်ပၼ်ႁႅင်းဢၼ်ၵဵပ်းဝႆႉ","units_sold":"ႁူဝ်ၼပ်ႉဢၼ်လႆႈတႅမ်ႈ Invoice","invoiced_value":"ၵႃႈၶၼ်ၼႂ်း Invoice"});
+  Object.assign(I18N.zh,{"nav_clients":"客户","nav_services":"服务项目","nav_reports":"报表","export_csv":"导出 CSV","invoice_count":"账单数量","collected":"已收款","outstanding_total":"待收款","invoiced_total":"账单总额","search_invoices":"搜索账单编号、客户或电话...","filter_all":"全部","overdue":"已逾期","no_results":"没有匹配的记录","duplicate":"复制","add_client":"+ 添加客户","clients_from_invoice":"现有账单中的客户会自动显示。新增客户不会修改旧账单。","search_clients":"搜索客户...","new_invoice":"新建账单","required_name":"请输入名称","add_service":"+ 添加服务","edit_service":"编辑服务","service_hint_note":"新建账单时可选已保存的服务；修改目录价格不会更改旧账单。 统计包含未付账单的行项目，金额为折扣和税费调整前的金额。","search_services":"搜索服务项目...","invalid_price":"请输入不小于零的有效价格","confirm_service_delete":"从服务目录移除？已有账单不会改变。","report_note":"沿用现有台账口径：收款按账单日期而非实际付款日期归类；预约定金不重复计入。","other_income":"其他收入","display_preferences":"显示偏好","date_format":"日期显示格式","date_format_note":"仅更改账单列表和报表中的日期显示方式；已存储日期及 JSON 备份不变。","report_expenses":"支出","choose_section":"选择页面","catalog_count":"已存服务","units_sold":"开单数量","invoiced_value":"项目金额"});
+  // Additive workflow extension: existing invoice/bookings/finance/notes/settings state remains intact.
+  if(!Array.isArray(state.clients))state.clients=[];
+  if(!Array.isArray(state.catalog))state.catalog=SERVICES.map(function(name){return{id:uid(),name:name,price:0};});
+  if(!state.settings.dateFormat)state.settings.dateFormat='ymd';
+  var wfStyle=document.createElement('style');wfStyle.textContent='@media(max-width:650px){#mobileNav{display:flex!important}}';document.head.appendChild(wfStyle);
+  var invoiceFilter='all',invoiceQuery='',reportPeriod='monthly',reportDate=today();
+  function wfEsc(value){return String(value==null?'':value).replace(/[&<>"']/g,function(ch){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch];});}
+  function wfDate(value){if(!/^\d{4}-\d{2}-\d{2}$/.test(value||''))return value||'';var p=value.split('-');if(state.settings.dateFormat==='dmy')return p[2]+'/'+p[1]+'/'+p[0];if(state.settings.dateFormat==='mdy')return p[1]+'/'+p[2]+'/'+p[0];return value;}
+  function wfGo(view){current=view;document.querySelectorAll('.nav-btn').forEach(function(x){x.classList.toggle('active',x.dataset.view===view);});render();}
+  function wfMobileNav(){var select=document.getElementById('wfMobileNav');if(!select)return;select.innerHTML=Array.from(document.querySelectorAll('.nav-btn')).map(function(button){return '<option value="'+wfEsc(button.dataset.view)+'">'+wfEsc(button.textContent)+'</option>';}).join('');select.value=current;document.getElementById('wfMobileNavLabel').textContent=t('choose_section');select.setAttribute('aria-label',t('choose_section'));}
+  window.__mobileGo=wfGo;
+  function wfCsvCell(value){var text=String(value==null?'':value);if(/^[\s]*[=+\-@]/.test(text)&&!/^-?\d+(?:\.\d+)?$/.test(text))text="'"+text;return '"'+text.replace(/"/g,'""')+'"';}
+  function wfDownloadCSV(filename,head,rows){var csv='\ufeff'+[head].concat(rows).map(function(r){return r.map(wfCsvCell).join(',');}).join('\r\n')+'\r\n';var url=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));var a=document.createElement('a');a.href=url;a.download=filename;a.click();setTimeout(function(){URL.revokeObjectURL(url);},30000);}
+  function wfInvoiceRows(ignoreQuery){return state.invoices.filter(function(i){var due=(i.due||i.date||'')<today()&&Math.max(0,invBal(i))>0;var status=invoiceFilter==='overdue'?due:invoiceFilter==='all'||i.status===invoiceFilter;var q=ignoreQuery?'':invoiceQuery.toLocaleLowerCase();return status&&(!q||[i.no,i.client,i.phone,i.method].join(' ').toLocaleLowerCase().includes(q));}).slice().reverse();}
+  function wfCards(cards){return '<div style="display:flex;flex-wrap:wrap;gap:10px;margin:12px 0;">'+cards.map(function(c){return '<div class="card" style="flex:1 1 150px;padding:14px;min-width:130px;"><div style="color:var(--muted);font-size:11px;">'+wfEsc(c[0])+'</div><div style="font-size:18px;font-weight:800;color:var(--accent);margin-top:6px;">'+wfEsc(c[1])+'</div></div>';}).join('')+'</div>';}
+
+  renderInv=function(){
+    var total=0,collected=0,outstanding=0;state.invoices.forEach(function(i){total+=invTotal(i);collected+=Number(i.paid||0);outstanding+=Math.max(0,invBal(i));});
+    var h='<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;"><h2 style="margin:0;font-size:17px;">'+t('nav_inv')+'</h2><div style="display:flex;gap:6px;"><button class="btn-ghost" onclick="window.__exportInvoiceCSV()">'+t('export_csv')+'</button><button class="btn-primary" onclick="window.__addInv()">'+t('add_inv')+'</button></div></div>';
+    h+=wfCards([[t('invoice_count'),String(state.invoices.length)],[t('collected'),fmt(collected)],[t('outstanding_total'),fmt(outstanding)],[t('invoiced_total'),fmt(total)]]);
+    h+='<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:12px 0;"><input class="field" id="invoiceSearch" value="'+wfEsc(invoiceQuery)+'" oninput="window.__invoiceSearch(this.value)" placeholder="'+wfEsc(t('search_invoices'))+'" style="flex:1 1 220px;max-width:360px;">';
+    ['all','paid','partial','unpaid','overdue'].forEach(function(f){h+='<button class="subtab'+(invoiceFilter===f?' active':'')+'" onclick="window.__invoiceFilter(\''+f+'\')">'+t(f==='all'?'filter_all':f)+'</button>';});
+    h+='</div><div class="card scroll-x" style="padding:6px 12px;"><table style="width:100%;border-collapse:collapse;font-size:12px;min-width:760px;"><thead><tr style="color:var(--muted);font-size:10px;"><th style="text-align:left;padding:9px 5px;">'+t('no')+'</th><th style="text-align:left;">'+t('client')+'</th><th style="text-align:left;">'+t('date')+'</th><th style="text-align:left;">'+t('due')+'</th><th style="text-align:right;">'+t('total')+'</th><th style="text-align:right;">'+t('balance')+'</th><th style="text-align:center;">'+t('status')+'</th><th style="text-align:center;">'+t('action')+'</th></tr></thead><tbody id="invoiceRows">';
+    var rows=wfInvoiceRows(true);
+    rows.forEach(function(i){var id=wfEsc(i.id),balance=invBal(i);h+='<tr class="tbl-row" data-id="'+id+'"><td style="padding:9px 5px;font-weight:600;">'+wfEsc(i.no)+'</td><td>'+wfEsc(i.client)+'<div style="font-size:10px;color:var(--muted);">'+wfEsc(i.phone)+'</div></td><td>'+wfEsc(wfDate(i.date))+'</td><td>'+wfEsc(wfDate(i.due||i.date))+'</td><td style="text-align:right;">'+fmt(invTotal(i))+'</td><td style="text-align:right;">'+fmt(balance)+'</td><td style="text-align:center;"><select class="field" style="width:auto;padding:3px 5px;font-size:10px;" onchange="window.__setInv(\''+id+'\',this.value)">';
+      ['unpaid','partial','paid'].forEach(function(x){h+='<option value="'+x+'"'+(i.status===x?' selected':'')+'>'+t(x)+'</option>';});
+      h+='</select></td><td style="text-align:center;white-space:nowrap;"><button class="btn-ghost" style="padding:4px 6px;font-size:10px;" onclick="window.__viewInv(\''+id+'\')">'+t('view')+'</button> <button class="btn-ghost" style="padding:4px 6px;font-size:10px;" onclick="window.__editInv(\''+id+'\')">'+t('edit')+'</button> <button class="btn-ghost" style="padding:4px 6px;font-size:10px;" onclick="window.__duplicateInvoice(\''+id+'\')">'+t('duplicate')+'</button> <button class="btn-danger" onclick="window.__delInv(\''+id+'\')">'+t('del')+'</button></td></tr>';});
+    h+='</tbody></table></div>';document.getElementById('view').innerHTML=h;window.__invoiceSearch(invoiceQuery);
+  };
+  window.__invoiceFilter=function(f){invoiceFilter=f;render();};
+  window.__invoiceSearch=function(q){invoiceQuery=q;var body=document.getElementById('invoiceRows');if(!body)return;var ids=new Set(wfInvoiceRows().map(function(i){return String(i.id);}));body.querySelectorAll('tr[data-id]').forEach(function(tr){tr.style.display=ids.has(tr.dataset.id)?'':'none';});var empty=body.querySelector('tr[data-empty]');if(!ids.size&&!empty)body.insertAdjacentHTML('beforeend','<tr data-empty><td colspan="8" style="padding:22px;text-align:center;color:var(--muted);">'+t('no_results')+'</td></tr>');if(ids.size&&empty)empty.remove();};
+  window.__exportInvoiceCSV=function(){var rows=wfInvoiceRows().map(function(i){return[i.no,i.client,i.phone||'',i.date,i.due||'',i.method||'',i.status,invTotal(i),Number(i.paid||0),invBal(i)];});wfDownloadCSV('LM_STUDIO_invoices_'+today()+'.csv',[t('no'),t('client'),t('phone'),t('date'),t('due'),t('method'),t('status'),t('total'),t('paid_amt'),t('balance')],rows);};
+  window.__duplicateInvoice=function(id){var original=state.invoices.find(function(i){return i.id===id;});if(!original)return;var copy=JSON.parse(JSON.stringify(original));copy.id=uid();var prefix=state.settings.invPrefix||'INV',year=new Date().getFullYear(),n=state.invoices.length+1;do{copy.no=prefix+'-'+year+'-'+String(n++).padStart(4,'0');}while(state.invoices.some(function(i){return i.no===copy.no;}));copy.date=today();var dueDate=new Date();dueDate.setDate(dueDate.getDate()+Number(state.settings.dueDays||7));copy.due=dueDate.getFullYear()+'-'+String(dueDate.getMonth()+1).padStart(2,'0')+'-'+String(dueDate.getDate()).padStart(2,'0');copy.paid=0;copy.status='unpaid';state.invoices.push(copy);save();render();};
+
+  function wfCustomers(){var out=new Map();state.clients.forEach(function(c){if(c&&c.name)out.set(c.name.trim().toLocaleLowerCase(),Object.assign({manual:true},c));});state.invoices.forEach(function(i){var key=String(i.client||'').trim().toLocaleLowerCase();if(!key)return;if(!out.has(key))out.set(key,{id:'',name:i.client,phone:i.phone||'',addr:i.addr||'',manual:false});else{var c=out.get(key);if(!c.phone)c.phone=i.phone||'';if(!c.addr)c.addr=i.addr||'';}});return Array.from(out.values()).sort(function(a,b){return a.name.localeCompare(b.name);});}
+  function renderClients(){var clients=wfCustomers(),h='<div style="display:flex;justify-content:space-between;gap:8px;align-items:center;"><h2 style="font-size:17px;">'+t('nav_clients')+'</h2><button class="btn-primary" onclick="window.__clientModal()">'+t('add_client')+'</button></div><p style="font-size:11px;color:var(--muted);">'+t('clients_from_invoice')+'</p><input class="field" id="clientSearch" oninput="window.__filterCards(\'clientList\',this.value)" placeholder="'+wfEsc(t('search_clients'))+'" style="max-width:350px;margin:5px 0 12px;"><div id="clientList" class="card scroll-x" style="padding:6px 12px;"><table style="width:100%;border-collapse:collapse;font-size:12px;min-width:590px;"><thead><tr><th style="text-align:left;">'+t('client')+'</th><th style="text-align:left;">'+t('phone')+'</th><th style="text-align:right;">'+t('invoice_count')+'</th><th style="text-align:right;">'+t('invoiced_total')+'</th><th>'+t('action')+'</th></tr></thead><tbody>';
+    if(!clients.length)h+='<tr><td colspan="5" style="padding:20px;text-align:center;">'+t('no_results')+'</td></tr>';
+    clients.forEach(function(c,index){var linked=state.invoices.filter(function(i){return String(i.client||'').trim().toLocaleLowerCase()===c.name.trim().toLocaleLowerCase();}),total=linked.reduce(function(v,i){return v+invTotal(i);},0),key=wfEsc(c.name+' '+(c.phone||''));h+='<tr class="tbl-row" data-search="'+key+'"><td style="padding:9px 4px;">'+wfEsc(c.name)+'</td><td>'+wfEsc(c.phone||'—')+'</td><td style="text-align:right;">'+linked.length+'</td><td style="text-align:right;">'+fmt(total)+'</td><td style="text-align:center;white-space:nowrap;"><button class="btn-ghost" onclick="window.__newInvoiceForIndex('+index+')">'+t('new_invoice')+'</button> <button class="btn-ghost" onclick="window.__clientModal('+index+')">'+t('edit')+'</button></td></tr>';});
+    h+='</tbody></table></div>';document.getElementById('view').innerHTML=h;}
+  window.__filterCards=function(id,q){var box=document.getElementById(id);if(!box)return;box.querySelectorAll('[data-search]').forEach(function(row){row.style.display=row.dataset.search.toLocaleLowerCase().includes(q.toLocaleLowerCase())?'':'none';});};
+  var wfEditingClientId=null;
+  window.__clientModal=function(index){var c=Number.isInteger(index)?wfCustomers()[index]:null;wfEditingClientId=c&&c.manual?c.id:null;document.getElementById('modalRoot').innerHTML='<div class="modal-bg" onclick="if(event.target===this)window.__closeM()"><div class="modal" style="max-width:430px;"><h3>'+t(c?'edit':'add_client')+'</h3><label>'+t('client')+'</label><input class="field" id="wfClientName" maxlength="150" value="'+wfEsc(c&&c.name||'')+'"><label>'+t('phone')+'</label><input class="field" id="wfClientPhone" maxlength="80" value="'+wfEsc(c&&c.phone||'')+'"><label>'+t('address')+'</label><input class="field" id="wfClientAddr" maxlength="300" value="'+wfEsc(c&&c.addr||'')+'"><div style="display:flex;justify-content:flex-end;gap:8px;margin-top:14px;"><button class="btn-ghost" onclick="window.__closeM()">'+t('close')+'</button><button class="btn-primary" onclick="window.__saveClient()">'+t('save')+'</button></div></div></div>';};
+  window.__saveClient=function(){var name=document.getElementById('wfClientName').value.trim();if(!name){alert(t('required_name'));return;}var key=name.toLocaleLowerCase(),phone=document.getElementById('wfClientPhone').value.trim(),addr=document.getElementById('wfClientAddr').value.trim();var c=state.clients.find(function(x){return x.id===wfEditingClientId;})||state.clients.find(function(x){return x.name.trim().toLocaleLowerCase()===key;});if(c){c.name=name;c.phone=phone;c.addr=addr;}else state.clients.push({id:uid(),name:name,phone:phone,addr:addr});wfEditingClientId=null;save();window.__closeM();render();};
+  window.__newInvoiceForIndex=function(index){var c=wfCustomers()[index];if(!c)return;wfGo('invoices');window.__addInv();document.getElementById('f_client').value=c.name;document.getElementById('f_phone').value=c.phone||'';document.getElementById('f_addr').value=c.addr||'';};
+
+  function renderCatalog(){var sold=state.invoices.flatMap(function(i){return Array.isArray(i.items)?i.items:[];}),units=sold.reduce(function(n,x){return n+Number(x.qty||0);},0),gross=sold.reduce(function(n,x){return n+Number(x.qty||0)*Number(x.price||0);},0);var h='<div style="display:flex;justify-content:space-between;gap:8px;align-items:center;"><h2 style="font-size:17px;">'+t('nav_services')+'</h2><button class="btn-primary" onclick="window.__serviceModal()">'+t('add_service')+'</button></div><p style="font-size:11px;color:var(--muted);">'+t('service_hint_note')+'</p>';
+    h+=wfCards([[t('catalog_count'),String(state.catalog.length)],[t('units_sold'),String(units)],[t('invoiced_value'),fmt(gross)]]);
+    h+='<input class="field" oninput="window.__filterCards(\'serviceList\',this.value)" placeholder="'+wfEsc(t('search_services'))+'" style="max-width:350px;margin:5px 0 12px;"><div id="serviceList" class="card scroll-x" style="padding:6px 12px;"><table style="width:100%;border-collapse:collapse;font-size:12px;min-width:650px;"><thead><tr><th style="text-align:left;">'+t('service')+'</th><th style="text-align:right;">'+t('price')+'</th><th style="text-align:right;">'+t('units_sold')+'</th><th style="text-align:right;">'+t('invoiced_value')+'</th><th>'+t('action')+'</th></tr></thead><tbody>';
+    if(!state.catalog.length)h+='<tr><td colspan="5" style="padding:20px;text-align:center;">'+t('no_results')+'</td></tr>';
+    state.catalog.forEach(function(x){var matched=sold.filter(function(y){return String(y.name||'').trim().toLocaleLowerCase()===x.name.trim().toLocaleLowerCase();}),count=matched.reduce(function(n,y){return n+Number(y.qty||0);},0),value=matched.reduce(function(n,y){return n+Number(y.qty||0)*Number(y.price||0);},0);h+='<tr class="tbl-row" data-search="'+wfEsc(x.name)+'"><td style="padding:9px 4px;">'+wfEsc(x.name)+'</td><td style="text-align:right;">'+(x.price?fmt(x.price):'—')+'</td><td style="text-align:right;">'+count+'</td><td style="text-align:right;">'+fmt(value)+'</td><td style="text-align:center;white-space:nowrap;"><button class="btn-ghost" onclick="window.__serviceModal(\''+wfEsc(x.id)+'\')">'+t('edit')+'</button> <button class="btn-ghost" onclick="window.__newInvoiceWithService(\''+wfEsc(x.id)+'\')">'+t('new_invoice')+'</button> <button class="btn-danger" onclick="window.__removeService(\''+wfEsc(x.id)+'\')">'+t('del')+'</button></td></tr>';});
+    h+='</tbody></table></div>';document.getElementById('view').innerHTML=h;}
+  window.__serviceModal=function(id){var x=state.catalog.find(function(v){return v.id===id;})||{name:'',price:''};document.getElementById('modalRoot').innerHTML='<div class="modal-bg" onclick="if(event.target===this)window.__closeM()"><div class="modal" style="max-width:430px;"><h3>'+t(id?'edit_service':'add_service')+'</h3><label>'+t('service')+'</label><input class="field" id="wfServiceName" maxlength="180" value="'+wfEsc(x.name)+'"><label>'+t('price')+' ('+wfEsc((CUR[state.settings.currency]||CUR.MMK).sym)+')</label><input class="field" id="wfServicePrice" type="number" min="0" step="0.01" value="'+wfEsc(x.price)+'"><div style="display:flex;justify-content:flex-end;gap:8px;margin-top:14px;"><button class="btn-ghost" onclick="window.__closeM()">'+t('close')+'</button><button class="btn-primary" onclick="window.__saveService(\''+wfEsc(id||'')+'\')">'+t('save')+'</button></div></div></div>';};
+  window.__saveService=function(id){var name=document.getElementById('wfServiceName').value.trim(),price=Number(document.getElementById('wfServicePrice').value||0);if(!name){alert(t('required_name'));return;}if(!Number.isFinite(price)||price<0){alert(t('invalid_price'));return;}var match=state.catalog.find(function(x){return x.id===id;});if(match){match.name=name;match.price=price;}else state.catalog.push({id:uid(),name:name,price:price});save();window.__closeM();render();};
+  window.__removeService=function(id){if(!confirm(t('confirm_service_delete')))return;state.catalog=state.catalog.filter(function(x){return x.id!==id;});save();render();};
+  window.__newInvoiceWithService=function(id){var x=state.catalog.find(function(s){return s.id===id;});if(!x)return;wfGo('invoices');window.__addInv();var row=document.querySelector('#itemsBox > div');if(row){row.querySelector('.in').value=x.name;row.querySelector('.ip').value=x.price||'';}};
+  var wfOriginalAddInv=window.__addInv,wfOriginalAddRow=window.__addRow;
+  window.__addInv=function(){wfOriginalAddInv();var list=document.getElementById('svcDatalist');if(list)list.innerHTML=state.catalog.map(function(s){return '<option value="'+wfEsc(s.name)+'"></option>';}).join('');};
+  window.__addRow=function(){wfOriginalAddRow();var box=document.getElementById('itemsBox'),row=box&&box.lastElementChild;if(row){row.querySelector('.in').addEventListener('change',function(){var entry=state.catalog.find(function(s){return s.name.toLocaleLowerCase()===this.value.trim().toLocaleLowerCase();},this);if(entry){var price=row.querySelector('.ip');if(!price.value&&entry.price)price.value=entry.price;}});}};
+
+  function wfReportRows(){var match=function(d){return reportPeriod==='daily'?d===reportDate:reportPeriod==='monthly'?String(d||'').slice(0,7)===reportDate.slice(0,7):String(d||'').slice(0,4)===reportDate.slice(0,4);};var out=[];state.invoices.forEach(function(i){if(match(i.date)&&Number(i.paid||0)>0)out.push({date:i.date,source:i.no+' · '+i.client,kind:t('paid_invoice'),income:Number(i.paid),expense:0});});state.otherIncome.forEach(function(o){if(match(o.date))out.push({date:o.date,source:o.note||o.cat||'',kind:t('other_income'),income:Number(o.amount||0),expense:0});});state.expenses.forEach(function(e){if(match(e.date))out.push({date:e.date,source:e.desc||e.cat||'',kind:t('report_expenses'),income:0,expense:Number(e.amount||0)});});return out.sort(function(a,b){return a.date<b.date?1:-1;});}
+  function renderReports(){var rows=wfReportRows(),inc=rows.reduce(function(n,r){return n+r.income;},0),exp=rows.reduce(function(n,r){return n+r.expense;},0);var h='<div style="display:flex;justify-content:space-between;gap:8px;align-items:center;"><h2 style="font-size:17px;">'+t('nav_reports')+'</h2><button class="btn-ghost" onclick="window.__exportReportCSV()">'+t('export_csv')+'</button></div><p style="font-size:11px;color:var(--muted);">'+t('report_note')+'</p><div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center;">';['daily','monthly','yearly'].forEach(function(p){h+='<button class="subtab'+(reportPeriod===p?' active':'')+'" onclick="window.__reportPeriod(\''+p+'\')">'+t(p)+'</button>';});h+='<input type="date" class="field" id="reportDate" value="'+wfEsc(reportDate)+'" onchange="window.__reportDate(this.value)" style="width:auto;"></div>';
+    h+=wfCards([[t('fin_income'),fmt(inc)],[t('report_expenses'),fmt(exp)],[t('fin_pl'),fmt(inc-exp)]]);
+    h+='<div class="card scroll-x" style="padding:6px 12px;"><table style="width:100%;border-collapse:collapse;font-size:12px;min-width:580px;"><thead><tr><th style="text-align:left;">'+t('date')+'</th><th style="text-align:left;">'+t('source')+'</th><th style="text-align:left;">'+t('cat')+'</th><th style="text-align:right;">'+t('fin_income')+'</th><th style="text-align:right;">'+t('report_expenses')+'</th></tr></thead><tbody>';
+    if(!rows.length)h+='<tr><td colspan="5" style="text-align:center;padding:22px;">'+t('no_results')+'</td></tr>';
+    rows.forEach(function(r){h+='<tr class="tbl-row"><td style="padding:9px 4px;">'+wfEsc(wfDate(r.date))+'</td><td>'+wfEsc(r.source)+'</td><td>'+wfEsc(r.kind)+'</td><td style="text-align:right;">'+(r.income?fmt(r.income):'—')+'</td><td style="text-align:right;">'+(r.expense?fmt(r.expense):'—')+'</td></tr>';});h+='</tbody></table></div>';document.getElementById('view').innerHTML=h;}
+  window.__reportPeriod=function(p){reportPeriod=p;render();};window.__reportDate=function(d){if(d)reportDate=d;render();};
+  window.__exportReportCSV=function(){wfDownloadCSV('LM_STUDIO_report_'+reportPeriod+'_'+reportDate+'.csv',[t('date'),t('source'),t('cat'),t('fin_income'),t('report_expenses')],wfReportRows().map(function(r){return[r.date,r.source,r.kind,r.income,r.expense];}));};
+  var wfZhLegacy={
+    'Logo & Header Banner':'Logo 与页眉横幅',
+    'Business Logo (PNG/JPG) · 200×200px သင့်တော်':'商家 Logo（PNG/JPG，建议 200×200 像素）',
+    'Invoice Header Banner · 2480×630px သင့်တော်':'账单页眉横幅（建议 2480×630 像素）',
+    'Upload Logo':'上传 Logo','Upload Banner':'上传横幅','Remove':'移除',
+    'Social Media & Contact (Invoice Footer)':'社交媒体与联系方式（账单页脚）',
+    'WeChat QR Code (ဖုန်းထဲကရွေး — tap card to upload)':'微信二维码（点击此处从手机上传）',
+    '[ Tap to upload WeChat QR image from phone ]':'[ 点击上传微信二维码图片 ]',
+    'Add':'添加','Tax & Terms':'税费与付款条款',
+    'Invoice Design — 10 Templates (tap to select)':'账单设计 · 10 种模板（点击选择）',
+    'Accent Color (optional — စာရွက်မှာ တန်မြင်ရမည်)':'强调色（可选，用于打印的账单）',
+    'Invoice Display':'账单显示','Upload Signature':'上传签名','Clear':'清除',
+    'Paper Size — Portrait (တောင်လိုက် · tap to select)':'纸张尺寸—纵向（点击选择）',
+    'Save JPEG':'保存 JPEG','Call Us':'致电','Live':'实时'
+  };
+  function wfLocalizeChinese(root){if(state.settings.lang!=='zh'||!root)return;var walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT),node;while((node=walker.nextNode())){if(node.parentElement&&node.parentElement.closest('td,.note-card,.chip'))continue;var label=node.nodeValue.trim();if(Object.prototype.hasOwnProperty.call(wfZhLegacy,label))node.nodeValue=node.nodeValue.replace(label,wfZhLegacy[label]);}}
+  var wfOriginalViewInv=window.__viewInv;
+  window.__viewInv=function(id){wfOriginalViewInv(id);if(state.settings.lang==='zh'){var printed=document.querySelector('#printArea h3');if(printed&&printed.textContent==='INVOICE')printed.textContent='账单';wfLocalizeChinese(document.getElementById('printArea'));var preview=document.getElementById('invPrev');if(preview)preview.innerHTML=document.getElementById('printArea').innerHTML;wfLocalizeChinese(document.getElementById('modalRoot'));}};
+  var wfOriginalApplyI18n=applyI18nUI;
+  applyI18nUI=function(){wfOriginalApplyI18n();if(state.settings.lang==='zh')document.documentElement.lang='zh-CN';wfMobileNav();};
+  var wfOriginalRender=render;
+  render=function(){if(current==='clients')renderClients();else if(current==='services')renderCatalog();else if(current==='reports')renderReports();else wfOriginalRender();wfLocalizeChinese(document.getElementById('view'));wfMobileNav();};
+  var wfOriginalSet=renderSet;
+  renderSet=function(){wfOriginalSet();if(setTab==='system'){var panel=document.createElement('div');panel.className='card';panel.style.cssText='padding:16px;margin-top:12px;';panel.innerHTML='<h3 style="margin:0 0 12px;font-size:14px;">'+t('display_preferences')+'</h3><label style="font-size:11px;color:var(--muted);">'+t('date_format')+'</label><select class="field" id="wfDateFormat" style="max-width:280px;"><option value="ymd">YYYY-MM-DD</option><option value="dmy">DD/MM/YYYY</option><option value="mdy">MM/DD/YYYY</option></select><p style="font-size:11px;color:var(--muted);">'+t('date_format_note')+'</p>';document.getElementById('view').appendChild(panel);document.getElementById('wfDateFormat').value=state.settings.dateFormat;document.getElementById('wfDateFormat').addEventListener('change',function(){state.settings.dateFormat=this.value;save();render();});}};
+  applyI18nUI();
+
+  Object.assign(I18N.my,{"fx_title":"အလိုအလျောက် ငွေလဲနှုန်းတွက်ချက်မှု (ခန့်မှန်း)","fx_amount":"တွက်မည့်ငွေပမာဏ","fx_from":"မူရင်းငွေကြေး","fx_updated":"နှုန်းထားထုတ်ပြန်ချိန်","fx_loading":"ငွေလဲနှုန်း ရယူနေသည်...","fx_unavailable":"ငွေလဲနှုန်း မရရှိပါ။ အင်တာနက်ချိတ်ပြီး ပြန်စမ်းပါ။","fx_cached":"သိမ်းထားသောနှုန်း (ယနေ့နှုန်း မဟုတ်နိုင်)","fx_fresh":"အွန်လိုင်းရရှိသောနှုန်း","fx_refresh":"နှုန်းပြန်ယူရန်","fx_pending":"နှုန်းစောင့်ဆိုင်းနေသည်","fx_warning":"ခန့်မှန်းတွက်ချက်မှုသာဖြစ်သည်။ MMK နှုန်းသည် တရားဝင်/ဈေးကွက်ပေါက်နှုန်းနှင့် ကွဲပြားနိုင်သည်။ ငွေကောက်ခံခြင်း သို့မဟုတ် စာရင်းပိတ်ခြင်းအတွက် မသုံးပါနှင့်။","fx_storage_warning":"လက်ရှိ currency ရွေးချယ်မှုသည် ရှိပြီးသား invoice ငွေပမာဏကို မပြောင်းဘဲ ငွေသင်္ကေတသာ ပြောင်းပြသည်။ ငွေလဲတွက်လိုပါက ဤအကွက်တွင် မူရင်းငွေကြေးနှင့် ပမာဏကို ရွေးပါ။","fx_source":"Rates By Exchange Rate API","fx_rate":"1 USD ၏ နှုန်းများ","fx_retry_later":"နှုန်းအသစ် မရပါ။ သိမ်းထားသောနှုန်းကိုသာ ပြထားသည်။","fx_symbol_only":"သင်္ကေတသာပြောင်းသည် · ငွေလဲမတွက်ပါ","fx_invalid":"မှန်ကန်သော သုညနှင့်အထက် ငွေပမာဏ ဖြည့်ပါ။"});
+  Object.assign(I18N.en,{"fx_title":"Automatic exchange-rate estimates","fx_amount":"Amount to convert","fx_from":"Original currency","fx_updated":"Rate published","fx_loading":"Fetching exchange rates...","fx_unavailable":"No exchange rates available. Connect to the internet and retry.","fx_cached":"Cached rate (may be outdated)","fx_fresh":"Online rate","fx_refresh":"Refresh rates","fx_pending":"Waiting for rates","fx_warning":"Illustrative estimates only. MMK reference rates can differ from local/transaction rates. Do not use these figures for payments or final accounts.","fx_storage_warning":"The existing currency selector changes the symbol only: it does not convert historical invoice amounts. Choose the actual original currency and enter an amount here to estimate its value.","fx_source":"Rates By Exchange Rate API","fx_rate":"Rates per 1 USD","fx_retry_later":"New rates unavailable; displaying cached rates only.","fx_symbol_only":"Symbol only · no conversion","fx_invalid":"Enter a valid, non-negative amount."});
+  Object.assign(I18N.shan,{"fx_title":"ၼပ်ႉလႅၵ်ႈငိုၼ်းႁင်းၵူၺ်း (ၵႃႈၶၼ်ၶၢတ်ႈလၢမ်း)","fx_amount":"ႁူဝ်ၼပ်ႉငိုၼ်းဢၼ်တေၼပ်ႉ","fx_from":"ၸိူဝ်ႉငိုၼ်းတူၼ်ႈ","fx_updated":"ၶၢဝ်းယၢမ်းဢွၵ်ႇၵႃႈလႅၵ်ႈငိုၼ်း","fx_loading":"တိုၵ်ႉဢဝ်ၵႃႈလႅၵ်ႈငိုၼ်း...","fx_unavailable":"ဢမ်ႇလႆႈၵႃႈလႅၵ်ႈငိုၼ်း။ ၵပ်းဢိၼ်ႇထိူဝ်ႇၼႅတ်ႉသေ ၶိုၼ်းၸၢမ်းတူၺ်း။","fx_cached":"ၵႃႈလႅၵ်ႈငိုၼ်းဢၼ်ၵဵပ်းဝႆႉ (ၸၢင်ႈၵဝ်ႇ)","fx_fresh":"ၵႃႈလႅၵ်ႈငိုၼ်းဢွၼ်ႇလၢႆး","fx_refresh":"ဢဝ်ၵႃႈလႅၵ်ႈငိုၼ်းမႂ်ႇ","fx_pending":"ပႂ်ႉၵႃႈလႅၵ်ႈငိုၼ်း","fx_warning":"ၼပ်ႉၶၢတ်ႈလၢမ်းၵူၺ်း။ ၵႃႈလႅၵ်ႈ MMK ၸၢင်ႈပႅၵ်ႇပိူင်ႈၵၼ်တင်းၵႃႈၼႂ်းၵၢတ်ႇ။ ယႃႇဢဝ်ၸႂ်ႉတႃႇႁပ်ႉငိုၼ်း လႄႈ ပိၵ်ႉသဵၼ်ႈမၢႆ။","fx_storage_warning":"တူဝ်လိူၵ်ႈၸိူဝ်ႉငိုၼ်းဢၼ်မီးဝႆႉ လႅၵ်ႈမၢႆငိုၼ်းၵႃႈဢမ်ႇၸႂ်ႈ၊ လႅၵ်ႈႁၢင်ႈမၢႆငိုၼ်းၵူၺ်း။ တေၼပ်ႉလႅၵ်ႈ တႅမ်ႈႁူဝ်ၼပ်ႉငိုၼ်း လႄႈ လိူၵ်ႈၸိူဝ်ႉငိုၼ်းတူၼ်ႈတီႈၼႆႈ။","fx_source":"Rates By Exchange Rate API","fx_rate":"ၵႃႈလႅၵ်ႈ 1 USD","fx_retry_later":"ဢမ်ႇလႆႈၵႃႈမႂ်ႇ၊ ၼႄၵႃႈဢၼ်ၵဵပ်းဝႆႉၵူၺ်း။","fx_symbol_only":"လႅၵ်ႈႁၢင်ႈမၢႆငိုၼ်းၵူၺ်း · ဢမ်ႇၼပ်ႉလႅၵ်ႈ","fx_invalid":"တႅမ်ႈႁူဝ်ၼပ်ႉငိုၼ်းဢၼ်မႅၼ်ႈ လႄႈ ဢမ်ႇတႅမ်ႇလိူဝ် 0။"});
+  Object.assign(I18N.zh,{"fx_title":"自动汇率换算（估算）","fx_amount":"换算金额","fx_from":"原币种","fx_updated":"汇率发布时间","fx_loading":"正在获取汇率...","fx_unavailable":"无法获取汇率。请联网后重试。","fx_cached":"已缓存汇率（可能过期）","fx_fresh":"在线汇率","fx_refresh":"更新汇率","fx_pending":"等待汇率","fx_warning":"仅供估算。缅元参考汇率可能与本地成交价不同；请勿用于实际收款或正式结账。","fx_storage_warning":"原有货币选择器只改变币种符号，不会换算历史账单金额。请在这里选原币种并填写金额进行估算。","fx_source":"Rates By Exchange Rate API","fx_rate":"每 1 USD 的汇率","fx_retry_later":"无法获取新汇率，仅显示已缓存汇率。","fx_symbol_only":"仅变更符号 · 不自动换算","fx_invalid":"请输入不小于零的有效金额。"});
+  // Daily market reference converter. Deliberately separate from the original invoice ledger.
+  // No client data, customer names or amounts are sent to the exchange-rate provider.
+  var fxCodes=['MMK','USD','THB','CNY'];
+  var fxKey='lmStudioFxReference_v1',fxRates=null,fxReceivedAt=0,fxInFlight=false,fxError=false;
+  var fxSource=fxCodes.includes(state.settings.currency)?state.settings.currency:'MMK',fxAmount=state.settings.currency==='MMK'?'100000':'100',fxFetchedThisVisit=false;
+  try{var oldFx=JSON.parse(localStorage.getItem(fxKey)||'null');if(fxValid(oldFx)){fxRates=oldFx;fxReceivedAt=oldFx.receivedAt||0;}}catch(e){}
+  function fxValid(x){return x&&x.base==='USD'&&Number.isFinite(x.updatedAt)&&x.updatedAt>0&&x.updatedAt<=Date.now()+86400000&&x.rates&&fxCodes.every(function(c){return Number.isFinite(x.rates[c])&&x.rates[c]>0;})&&x.rates.USD===1;}
+  function fxNeedsFetch(){return !fxRates||Date.now()>Math.max(fxRates.nextUpdate||0,fxReceivedAt+3600000);}
+  function fxNumeric(){var n=Number(fxAmount);return fxAmount!==''&&Number.isFinite(n)&&n>=0?n:null;}
+  function fxFmt(value,code){var digits=code==='MMK'?(value>0&&value<1?4:0):(value>0&&value<0.01?6:2);return new Intl.NumberFormat('en-US',{maximumFractionDigits:digits,minimumFractionDigits:digits}).format(value)+' '+code;}
+  function fxCards(){var wrap=document.getElementById('fxCards');if(!wrap)return;if(!fxRates){wrap.innerHTML='<p style="font-size:12px;color:var(--muted);">'+t(fxInFlight?'fx_loading':'fx_unavailable')+'</p>';return;}
+    var n=fxNumeric();wrap.innerHTML=n===null?'<p style="font-size:12px;color:var(--danger);">'+t('fx_invalid')+'</p>':fxCodes.map(function(c){var value=n*fxRates.rates[c]/fxRates.rates[fxSource];return '<div class="card" style="flex:1 1 128px;min-width:125px;padding:13px;"><div style="color:var(--muted);font-size:11px;">'+c+'</div><div style="font-size:16px;font-weight:700;color:var(--accent);margin-top:4px;word-break:break-word;">≈ '+fxFmt(value,c)+'</div></div>';}).join('');
+    var meta=document.getElementById('fxMeta');if(!meta)return;var published=new Date(fxRates.updatedAt).toLocaleString(state.settings.lang==='zh'?'zh-CN':'en-GB',{dateStyle:'medium',timeStyle:'short',timeZone:'UTC'});
+    meta.textContent=(fxFetchedThisVisit?t('fx_fresh'):t('fx_cached'))+' · '+t('fx_updated')+': '+published+' UTC'+(fxError?' · '+t('fx_retry_later'):'');
+  }
+  function fxPanel(){var h='<section id="fxPanel" class="card" style="padding:15px;margin:14px 0;" aria-label="'+t('fx_title')+'"><h3 style="font-size:15px;margin:0 0 6px;">'+t('fx_title')+'</h3><p style="font-size:11px;color:var(--muted);margin:0 0 12px;line-height:1.6;">'+t('fx_storage_warning')+'</p><div style="display:flex;flex-wrap:wrap;gap:10px;align-items:end;margin-bottom:10px;"><label style="flex:1 1 160px;font-size:11px;">'+t('fx_amount')+'<input id="fxAmount" class="field" inputmode="decimal" type="number" min="0" step="any" value="'+fxAmount+'" oninput="window.__fxAmount(this.value)" style="margin-top:5px;"></label><label style="flex:1 1 130px;font-size:11px;">'+t('fx_from')+'<select id="fxFrom" class="field" onchange="window.__fxSource(this.value)" style="margin-top:5px;">';
+    fxCodes.forEach(function(c){h+='<option value="'+c+'"'+(c===fxSource?' selected':'')+'>'+c+'</option>';});h+='</select></label><button class="btn-ghost" id="fxRefresh" onclick="window.__fxRefresh()" style="height:39px;">'+t('fx_refresh')+'</button></div><div id="fxCards" style="display:flex;flex-wrap:wrap;gap:8px;"></div><p id="fxMeta" style="font-size:11px;color:var(--muted);line-height:1.6;margin:10px 0 2px;"></p><p style="font-size:11px;color:var(--muted);line-height:1.6;margin:4px 0 2px;">'+t('fx_warning')+'</p><a href="https://www.exchangerate-api.com" target="_blank" rel="noopener noreferrer" style="font-size:11px;color:var(--accent);">'+t('fx_source')+'</a></section>';return h;}
+  function fxPaint(){fxCards();var button=document.getElementById('fxRefresh');if(button)button.disabled=fxInFlight;}
+  async function fxLoad(force){if(fxInFlight||(!force&&!fxNeedsFetch()))return;if(force&&fxReceivedAt&&Date.now()-fxReceivedAt<3600000&&!fxNeedsFetch()){fxError=false;fxPaint();return;}
+    fxInFlight=true;fxError=false;fxPaint();var ctrl=new AbortController(),timer=setTimeout(function(){ctrl.abort();},9000);
+    try{var res=await fetch('https://open.er-api.com/v6/latest/USD',{signal:ctrl.signal,cache:'no-store'});if(!res.ok)throw Error('Rate provider HTTP '+res.status);var data=await res.json();var x={base:'USD',updatedAt:Number(data.time_last_update_unix)*1000,nextUpdate:Number(data.time_next_update_unix)*1000,receivedAt:Date.now(),rates:{}};fxCodes.forEach(function(c){x.rates[c]=Number(data.rates&&data.rates[c]);});if(data.result!=='success'||data.base_code!=='USD'||!fxValid(x))throw Error('Unexpected rate payload');fxRates=x;fxReceivedAt=x.receivedAt;fxFetchedThisVisit=true;try{localStorage.setItem(fxKey,JSON.stringify(x));}catch(e){}
+    }catch(e){fxError=true;console.warn('FX rates unavailable; original invoice amounts were not touched.',e.message);}
+    finally{clearTimeout(timer);fxInFlight=false;fxPaint();}
+  }
+  window.__fxAmount=function(v){fxAmount=v;fxPaint();};
+  window.__fxSource=function(v){if(fxCodes.includes(v)){fxSource=v;fxPaint();}};
+  window.__fxRefresh=function(){fxLoad(true);};
+  var fxOriginalRenderFin=renderFin;
+  renderFin=function(){fxOriginalRenderFin();document.getElementById('view').insertAdjacentHTML('afterbegin',fxPanel());fxPaint();fxLoad(false);};
+  var fxOriginalApplyI18n=applyI18nUI;
+  applyI18nUI=function(){fxOriginalApplyI18n();var note=document.getElementById('fxSelectorNote');if(note){note.textContent=t('fx_symbol_only');note.title=t('fx_storage_warning');}var selector=document.getElementById('curSel');selector.title=t('fx_storage_warning');};
+  var fxLabel=document.createElement('small');fxLabel.id='fxSelectorNote';fxLabel.style.cssText='font-size:10px;color:var(--muted);align-self:center;max-width:165px;line-height:1.2;';document.getElementById('curSel').after(fxLabel);
+  applyI18nUI();
+
+  render();
+})();
+</script>
+<!-- ===== LM STUDIO · Mobile / PWA layer (additive — app logic untouched) ===== -->
+<div id="mbar" aria-label="Main navigation"></div>
+<div id="msheet" class="msheet-bg" hidden></div>
+<div id="mInstall" hidden></div>
+<script>
+(function(){
+  'use strict';
+  var MQ = window.matchMedia('(max-width:650px)');
+  var standalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+  var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  var coarse = window.matchMedia('(pointer:coarse)').matches;
+  if (standalone) document.documentElement.classList.add('is-standalone');
+
+  /* ---------- styles ---------- */
+  var css = ''
+  + 'html{-webkit-text-size-adjust:100%;}'
+  + 'body{-webkit-tap-highlight-color:transparent;}'
+  + '.is-standalone body{padding-top:env(safe-area-inset-top);}'
+  + '#mbar{display:none;}'
+  + '@media (max-width:650px){'
+  +   '#topNav,#mobileNav{display:none!important;}'
+  +   'body{padding-bottom:calc(74px + env(safe-area-inset-bottom));}'
+  +   'body>div:first-of-type>div{padding-left:max(12px,env(safe-area-inset-left))!important;padding-right:max(12px,env(safe-area-inset-right))!important;padding-bottom:24px!important;}'
+  +   '#mbar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:40;background:var(--card);border-top:1px solid var(--border);padding:6px 4px calc(6px + env(safe-area-inset-bottom));box-shadow:0 -6px 20px rgba(0,0,0,.18);}'
+  +   '#mbar button{flex:1 1 0;min-width:0;background:none;border:none;color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:3px;padding:4px 2px;font:inherit;font-size:10px;font-weight:600;line-height:1.25;cursor:pointer;border-radius:10px;}'
+  +   '#mbar button span{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}'
+  +   '#mbar button.on{color:var(--accent);background:var(--accent-soft);}'
+  +   '#mbar svg{width:22px;height:22px;}'
+  +   '.field,input,select,textarea{font-size:16px!important;}'
+  +   '#langSel,#curSel{padding:8px 10px!important;}'
+  +   '#fxSelectorNote{display:none;}'
+  +   '.btn-primary,.btn-ghost{min-height:40px;}'
+  +   '.modal-bg{padding:0!important;align-items:flex-start!important;}'
+  +   '.modal{max-width:100%!important;margin:48px 0 0!important;border-radius:18px 18px 0 0!important;padding:18px 14px calc(22px + env(safe-area-inset-bottom))!important;min-height:calc(100% - 48px);}'
+  +   '.modal [style*="grid-template-columns:repeat(5"]{grid-template-columns:repeat(3,1fr)!important;}'
+  +   '.modal [style*="grid-template-columns:1fr 1fr 1fr"]{grid-template-columns:1fr 1fr!important;}'
+  +   '.sig-canvas{max-width:100%;height:auto;}'
+  +   'h1#bizNameHeader{font-size:16px!important;}'
+  + '}'
+  + '.msheet-bg{position:fixed;inset:0;z-index:60;background:rgba(0,0,0,.55);display:flex;align-items:flex-end;justify-content:center;}'
+  + '.msheet-bg[hidden]{display:none;}'
+  + '.msheet{background:var(--card);color:var(--text);border:1px solid var(--border);border-radius:18px 18px 0 0;width:100%;max-width:520px;padding:10px 14px calc(16px + env(safe-area-inset-bottom));max-height:85vh;overflow:auto;animation:mUp .2s ease-out;}'
+  + '.msheet .grab{width:38px;height:4px;border-radius:2px;background:var(--border);margin:0 auto 10px;}'
+  + '.msheet .row{display:flex;align-items:center;gap:12px;width:100%;padding:13px 10px;background:none;border:none;border-radius:12px;color:var(--text);font:inherit;font-size:15px;font-weight:600;text-align:left;cursor:pointer;}'
+  + '.msheet .row:active,.msheet .row.on{background:var(--accent-soft);}'
+  + '.msheet .row svg{width:22px;height:22px;color:var(--accent);flex-shrink:0;}'
+  + '.msheet img{display:block;max-width:100%;max-height:45vh;margin:6px auto 12px;border-radius:10px;background:#fff;}'
+  + '.msheet .acts{display:flex;flex-direction:column;gap:8px;}'
+  + '.msheet .acts button{width:100%;min-height:46px;font-size:15px;}'
+  + '@keyframes mUp{from{transform:translateY(40px);opacity:.4}to{transform:none;opacity:1}}'
+  + '#mInstall{position:fixed;left:10px;right:10px;bottom:calc(80px + env(safe-area-inset-bottom));z-index:45;background:var(--card);color:var(--text);border:1px solid var(--accent);border-radius:14px;padding:12px 14px;font-size:13px;line-height:1.5;box-shadow:0 10px 30px rgba(0,0,0,.35);display:flex;gap:10px;align-items:flex-start;}'
+  + '#mInstall[hidden]{display:none;}'
+  + '#mInstall b{color:var(--accent);}'
+  + '#mInstall .x{background:none;border:none;color:var(--muted);font-size:20px;line-height:1;cursor:pointer;padding:0 2px;}';
+  var st = document.createElement('style'); st.id = 'mobileLayerCSS'; st.textContent = css; document.head.appendChild(st);
+
+  /* ---------- bottom tab bar ---------- */
+  var I = {
+    dashboard:'<path d="M3 13h8V3H3zM13 21h8v-8h-8zM13 3v8h8V3zM3 21h8v-6H3z"/>',
+    invoices:'<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h5"/>',
+    bookings:'<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>',
+    finance:'<path d="M3 3v18h18"/><path d="m7 15 4-4 3 3 6-6"/>',
+    clients:'<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>',
+    services:'<path d="M20.59 13.41 13.42 20.6a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><circle cx="7" cy="7" r="1.5"/>',
+    reports:'<path d="M18 20V10M12 20V4M6 20v-6"/>',
+    notes:'<path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z"/>',
+    settings:'<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>',
+    more:'<circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/>',
+    share:'<path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><path d="m16 6-4-4-4 4M12 2v13"/>',
+    download:'<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5M12 15V3"/>'
+  };
+  function svg(k){return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+(I[k]||I.more)+'</svg>';}
+  function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+
+  var firstNav = document.querySelector('.nav-btn');
+  var topNav = firstNav && firstNav.parentElement;
+  if (topNav) topNav.id = 'topNav';
+  var PRIMARY = ['dashboard','invoices','bookings','finance'];
+  var bar = document.getElementById('mbar');
+  var sheet = document.getElementById('msheet');
+
+  function navBtns(){return Array.prototype.slice.call(document.querySelectorAll('.nav-btn'));}
+  function navLabel(v){var b=document.querySelector('.nav-btn[data-view="'+v+'"]');return b?b.textContent.trim():v;}
+  function activeView(){var b=document.querySelector('.nav-btn.active');return b?b.dataset.view:'';}
+  function moreLabel(){var l=(document.getElementById('langSel')||{}).value;return {my:'နောက်ထပ်',shan:'တၢင်ႇၸိူဝ်း',zh:'更多',en:'More'}[l]||'More';}
+  function go(v){var b=document.querySelector('.nav-btn[data-view="'+v+'"]');if(b){b.click();window.scrollTo({top:0,behavior:'instant'in window?'instant':'auto'});}}
+
+  function paintBar(){
+    var cur = activeView(), extra = navBtns().map(function(b){return b.dataset.view;}).filter(function(v){return PRIMARY.indexOf(v)<0;});
+    var h = PRIMARY.map(function(v){return '<button type="button" data-go="'+v+'" class="'+(cur===v?'on':'')+'">'+svg(v)+'<span>'+esc(navLabel(v))+'</span></button>';}).join('');
+    h += '<button type="button" data-go="__more" class="'+(extra.indexOf(cur)>=0?'on':'')+'">'+svg('more')+'<span>'+esc(extra.indexOf(cur)>=0?navLabel(cur):moreLabel())+'</span></button>';
+    bar.innerHTML = h;
+  }
+  bar.addEventListener('click', function(e){
+    var b = e.target.closest('button[data-go]'); if(!b) return;
+    if (b.dataset.go === '__more') openMore(); else go(b.dataset.go);
+  });
+  function openMore(){
+    var cur = activeView();
+    var rows = navBtns().filter(function(b){return PRIMARY.indexOf(b.dataset.view)<0;}).map(function(b){
+      var v=b.dataset.view;return '<button type="button" class="row'+(cur===v?' on':'')+'" data-go="'+v+'">'+svg(v)+'<span>'+esc(b.textContent.trim())+'</span></button>';}).join('');
+    showSheet('<div class="grab"></div>'+rows);
+  }
+  function showSheet(html){sheet.innerHTML='<div class="msheet" role="dialog" aria-modal="true">'+html+'</div>';sheet.hidden=false;}
+  function hideSheet(){sheet.hidden=true;sheet.innerHTML='';}
+  sheet.addEventListener('click', function(e){
+    if (e.target === sheet) return hideSheet();
+    var r = e.target.closest('[data-go]'); if (r){hideSheet();go(r.dataset.go);}
+  });
+
+  // keep bar in sync with view changes & language switches
+  if (topNav) new MutationObserver(paintBar).observe(topNav,{subtree:true,attributes:true,attributeFilter:['class'],childList:true,characterData:true});
+  var ls = document.getElementById('langSel'); if (ls) ls.addEventListener('change', function(){setTimeout(paintBar,0);});
+  paintBar();
+
+  /* ---------- status-bar colour follows the app theme ---------- */
+  var meta = document.querySelector('meta[name="theme-color"]');
+  function syncTheme(){var bg=getComputedStyle(document.documentElement).getPropertyValue('--bg').trim();if(meta&&bg)meta.setAttribute('content',bg);}
+  new MutationObserver(syncTheme).observe(document.documentElement,{attributes:true,attributeFilter:['style']});
+  syncTheme();
+
+  /* ---------- Save / Share sheet for JPEG, CSV, backup files on phones ---------- */
+  var nativeClick = HTMLAnchorElement.prototype.click;
+  HTMLAnchorElement.prototype.click = function(){
+    var a = this;
+    if (!a.download || !coarse || !navigator.canShare || typeof File === 'undefined') return nativeClick.call(a);
+    var name = a.download, href = a.href;
+    fetch(href).then(function(r){return r.blob();}).then(function(blob){
+      var type = blob.type || (/\.jpe?g$/i.test(name)?'image/jpeg':/\.csv$/i.test(name)?'text/csv':/\.json$/i.test(name)?'application/json':'application/octet-stream');
+      var file = new File([blob], name, {type:type});
+      if (!navigator.canShare({files:[file]})) return nativeClick.call(a);
+      var isImg = /^image\//.test(type), url = URL.createObjectURL(blob);
+      var L = ({my:['မျှဝေ / သိမ်းဆည်း','ဖုန်းထဲ Download','ပိတ်'],shan:['ပိုၼ်ပၼ် / သိမ်း','Download','ပိၵ်ႉ'],zh:['分享 / 保存','下载','关闭']})[(ls||{}).value]||['Share / Save','Download','Close'];
+      showSheet('<div class="grab"></div><div style="font-size:13px;font-weight:700;margin:0 4px 6px;word-break:break-all;">'+esc(name)+'</div>'
+        +(isImg?'<img src="'+url+'" alt="">':'')
+        +'<div class="acts"><button type="button" class="btn-primary" data-act="share">'+L[0]+'</button>'
+        +'<button type="button" class="btn-ghost" data-act="dl">'+L[1]+'</button>'
+        +'<button type="button" class="btn-ghost" data-act="close">'+L[2]+'</button></div>');
+      sheet.onclick = function(e){
+        var act = (e.target.closest('[data-act]')||{}).dataset; act = act && act.act;
+        if (e.target===sheet || act==='close'){sheet.onclick=null;hideSheet();setTimeout(function(){URL.revokeObjectURL(url);},1000);return;}
+        if (act==='share'){navigator.share({files:[file],title:name}).catch(function(){});}
+        if (act==='dl'){var d=document.createElement('a');d.href=url;d.download=name;nativeClick.call(d);}
+      };
+    }).catch(function(){nativeClick.call(a);});
+  };
+
+  /* ---------- keep data safe: ask the browser not to evict storage ---------- */
+  if (navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(function(){});
+
+  /* ---------- offline service worker ---------- */
+  if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol)) {
+    window.addEventListener('load', function(){navigator.serviceWorker.register('sw.js').catch(function(){});});
+  }
+
+  /* ---------- "Add to Home Screen" hint ---------- */
+  var tip = document.getElementById('mInstall'), deferred = null;
+  function dismissed(){try{return localStorage.getItem('lmInstallTipOff')==='1';}catch(e){return false;}}
+  function closeTip(){tip.hidden=true;try{localStorage.setItem('lmInstallTipOff','1');}catch(e){}}
+  tip.addEventListener('click', function(e){
+    if (e.target.closest('.x')) return closeTip();
+    if (e.target.closest('[data-install]') && deferred){deferred.prompt();deferred.userChoice.finally(function(){deferred=null;closeTip();});}
+  });
+  window.addEventListener('beforeinstallprompt', function(e){
+    e.preventDefault(); deferred = e; if (dismissed() || standalone) return;
+    tip.innerHTML='<div style="flex:1;">ဖုန်း Home Screen မှာ App အဖြစ် ထည့်ပါ — Offline သုံးလို့ရပါတယ်။<br><button type="button" class="btn-primary" data-install style="margin-top:8px;padding:8px 16px;">Install App</button></div><button type="button" class="x" aria-label="Close">×</button>';
+    tip.hidden=false;
+  });
+  if (isIOS && !standalone && !dismissed() && MQ.matches) {
+    tip.innerHTML='<div style="flex:1;">iPhone: Safari အောက်ခြေက <b>Share ⬆︎</b> ကိုနှိပ် → <b>Add to Home Screen</b> ကိုရွေးပါ။ App အဖြစ် Offline သုံးလို့ရပါမယ်။</div><button type="button" class="x" aria-label="Close">×</button>';
+    tip.hidden=false;
+  }
+})();
+</script>
+
+</body>
+</html>
